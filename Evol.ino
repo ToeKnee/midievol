@@ -277,12 +277,12 @@ void handleClock() {
 }
 
 void play_note() {
-  int current_note = beat % sizeof(notes) / sizeof(Note);
+  int current_note = beat % (sizeof(notes) / sizeof(Note));
   int last_note;
   if (current_note > 0) {
     last_note = current_note - 1;
   } else {
-    last_note = sizeof(notes) / sizeof(Note);
+    last_note = (sizeof(notes) / sizeof(Note)) - 1;
   }
 
   if (legato) {
