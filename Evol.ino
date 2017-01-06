@@ -68,12 +68,13 @@ struct Sequence {
 };
 
 // Clock
+const byte CPQN = 24;  // Midi Clock
+const byte PPQN = 96;  // Pulse MTC
 int bpm = 120; // could be byte?
 byte beat_chr = 0; // 1 for filled heart
 unsigned int pulse_count = 0;
-int microseconds_pqn[24];
+int microseconds_pqn[CPQN];  // So we can average the pulse lengths
 unsigned long last_clock_pulse = micros();
-const byte PPQN = 96;
 const unsigned long oneMinuteInMicroseconds = 60000000;
 byte timeSignatureNumerator = 4; // For show only, use the actual time signature numerator
 byte timeSignatureDenominator = 4; // For show only, use the actual time signature denominator
@@ -156,6 +157,10 @@ void reset_midi() {
       MIDI.sendNoteOff(j, 0, i);
     }
   }
+
+  for (int i = 0; i < CPQN; i++) {
+    microseconds_pqn[i] = 0;
+  }
   //debug("         ");
 }
 
@@ -233,7 +238,7 @@ void handleClock() {
   unsigned long pulse_len;
   int new_bpm;
 
-  microseconds_pqn[pulse_count % 24] = now - last_clock_pulse;
+  microseconds_pqn[pulse_count % CPQN] = now - last_clock_pulse;
   last_clock_pulse = now;
 
   // Handle playing notes at the right time
@@ -255,12 +260,14 @@ void handleClock() {
     // Only calculate the current bpm once per beat
     // Average pulse length
     unsigned long sum = 0L;
-    for (int i = 0 ; i < 24 ; i++) {
-      sum += microseconds_pqn[i];
+    for (int i = 0 ; i < CPQN ; i++) {
+      if (microseconds_pqn[i] > 0) {
+        sum += microseconds_pqn[i];
+      }
     }
-    pulse_len = sum / 24;
+    pulse_len = sum / CPQN;
 
-    new_bpm = (oneMinuteInMicroseconds / (pulse_len * 24)) * (timeSignatureDenominator / 4.0);
+    new_bpm = (oneMinuteInMicroseconds / (pulse_len * CPQN)) * (timeSignatureDenominator / 4.0);
     if (new_bpm != bpm) {
       bpm = new_bpm;
       ui_dirty = true;
