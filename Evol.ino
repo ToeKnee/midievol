@@ -24,47 +24,47 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 bool ui_dirty = false;
 
 byte heart[8] = {
-  0b00000,
-  0b01010,
-  0b11111,
-  0b11111,
-  0b11111,
-  0b01110,
-  0b00100,
-  0b00000,
+    0b00000,
+    0b01010,
+    0b11111,
+    0b11111,
+    0b11111,
+    0b01110,
+    0b00100,
+    0b00000,
 };
 
 byte empty_heart[8] = {
-  0b00000,
-  0b01010,
-  0b10101,
-  0b10001,
-  0b10001,
-  0b01010,
-  0b00100,
-  0b00000,
+    0b00000,
+    0b01010,
+    0b10101,
+    0b10001,
+    0b10001,
+    0b01010,
+    0b00100,
+    0b00000,
 };
 
 byte play[8] = {
-  0b11000,
-  0b11100,
-  0b11110,
-  0b11111,
-  0b11111,
-  0b11110,
-  0b11100,
-  0b11000,
+    0b11000,
+    0b11100,
+    0b11110,
+    0b11111,
+    0b11111,
+    0b11110,
+    0b11100,
+    0b11000,
 };
 
 struct Note {
-  byte note; // 0 to 127
-  byte velocity;  // 0 to 127
+    byte note; // 0 to 127
+    byte velocity;  // 0 to 127
 };
 
 struct Sequence {
-  byte id;
-  byte channel; // 16 channels
-  Note* sequence;
+    byte id;
+    byte channel; // 16 channels
+    Note* sequence;
 };
 
 // Clock
@@ -75,148 +75,165 @@ byte beat_chr = 0; // 1 for filled heart
 unsigned int pulse_count = 0;
 int microseconds_pqn[CPQN];  // So we can average the pulse lengths
 unsigned long last_clock_pulse = micros();
+unsigned long microseconds_per_pulse;
+unsigned long next_clock_pulse = last_clock_pulse + microseconds_per_pulse;
+
 const unsigned long oneMinuteInMicroseconds = 60000000;
 byte timeSignatureNumerator = 4; // For show only, use the actual time signature numerator
 byte timeSignatureDenominator = 4; // For show only, use the actual time signature denominator
 
 // State
 char mode[] = "SEQ";  // or DRM or PLY?
-bool playing = false;
+bool playing = true;
 unsigned int beat = 0;
 int transpose = -12;
 bool legato = true;
+bool internal_clock_source = true;
 
 // Dummy sequence stuff
 Note notes[] { // 64?
-  {60, 100},
-  {64, 100},
-  {65, 100},
-  {67, 120},
-  {71, 127},
-  {72, 110},
-  {71, 100},
-  {67, 100},
-  {65, 100},
-  {64, 100},
+    {60, 100},
+    {64, 100},
+    {65, 100},
+    {67, 120},
+    {71, 127},
+    {72, 110},
+    {71, 100},
+    {67, 100},
+    {65, 100},
+    {64, 100},
 };
 
 Sequence seq_1 = {
-  1,
-  1,
-  notes,
+    1,
+    1,
+    notes,
 };
 
 void debug(char msg[]) {
-  Serial.println(msg);
-  lcd.setCursor(0, 1);
-  lcd.print(msg);
+    //Serial.println(msg);
+    lcd.setCursor(0, 1);
+    lcd.print(msg);
 }
 
 void setup() {
-  // Set up the custom characters
-  lcd.createChar(0, empty_heart);
-  lcd.createChar(1, heart);
-  lcd.createChar(2, play);
+    // Set up the custom characters
+    lcd.createChar(0, empty_heart);
+    lcd.createChar(1, heart);
+    lcd.createChar(2, play);
 
-  // set up the LCD's number of columns and rows:
-  lcd.begin(16, 2);
+    // set up the LCD's number of columns and rows:
+    lcd.begin(16, 2);
 
-  // Set up midi
-  //debug("MIDI listen");
-  MIDI.begin(MIDI_CHANNEL_OMNI);  // Listen to all incoming messages
-  MIDI.setHandleStart(handleStart);
-  MIDI.setHandleContinue(handleContinue);
-  MIDI.setHandleStop(handleStop);
-  MIDI.setHandleSongPosition(handleSongPosition);
-  MIDI.setHandleClock(handleClock);
+    // Set up midi
+    //debug("MIDI listen");
+    MIDI.begin(MIDI_CHANNEL_OMNI);  // Listen to all incoming messages
+    MIDI.setHandleStart(handleStart);
+    MIDI.setHandleContinue(handleContinue);
+    MIDI.setHandleStop(handleStop);
+    MIDI.setHandleSongPosition(handleSongPosition);
+    MIDI.setHandleClock(handleClock);
 
-  // Set up Serial for Hairless MIDI Bridge
-  Serial.begin(115200);
+    // Set up Serial for Hairless MIDI Bridge
+    Serial.begin(115200);
 
-  reset_midi();
-  // Draw the ui for the first time
-  draw_ui();
+    reset_midi();
+	microseconds_per_pulse = pulse_len_from_bpm(bpm);
 
-  lcd.setCursor(10, 1);
-  lcd.print(sizeof(notes) / sizeof(Note));
+    // Draw the ui for the first time
+    draw_ui();
 }
 
 void loop() {
-  MIDI.read();
+    MIDI.read();
 
-  if (ui_dirty) {
-    draw_ui();
-  }
+    // If internal clock and playing
+    if (internal_clock_source && playing) {
+        unsigned long now = micros();
+		if (next_clock_pulse <= now) {
+			next_clock_pulse = now + microseconds_per_pulse;
+
+            // Fire clock pulse
+            using namespace midi;
+            MIDI.sendRealTime(Clock);
+
+            handleClock();
+        }
+    }
+
+    if (ui_dirty) {
+        draw_ui();
+    }
 }
 
 void reset_midi() {
-  //debug("Resetting");
-  // Reset each channel
-  for (int i = 0; i <= 16; i++) {
-    // Reset each note on each channel
-    for (int j = 0; j <= 128; j++) {
-      MIDI.sendNoteOff(j, 0, i);
+    //debug("Resetting");
+    // Reset each channel
+    for (int i = 0; i <= 16; i++) {
+        // Reset each note on each channel
+        for (int j = 0; j <= 128; j++) {
+            MIDI.sendNoteOff(j, 0, i);
+        }
     }
-  }
 
-  for (int i = 0; i < CPQN; i++) {
-    microseconds_pqn[i] = 0;
-  }
-  //debug("         ");
+    for (int i = 0; i < CPQN; i++) {
+        microseconds_pqn[i] = 0;
+    }
+    //debug("         ");
 }
 
 void draw_ui() {
-  ui_dirty = false;
-  // Write the mode
-  lcd.setCursor(0, 0);
-  lcd.print(mode);
+    ui_dirty = false;
+    // Write the mode
+    lcd.setCursor(0, 0);
+    lcd.print(mode);
 
-  // Write Play State
-  lcd.setCursor(10, 0);
-  if (playing) {
-    lcd.write(byte(2));  // Play button
-  } else {
-    lcd.print(" ");
-  }
+    // Write Play State
+    lcd.setCursor(10, 0);
+    if (playing) {
+        lcd.write(byte(2));  // Play button
+    } else {
+        lcd.print(" ");
+    }
 
-  // Write the bpm at the top right of the display
-  lcd.setCursor(12, 0);
-  lcd.write(byte(beat_chr));
-  lcd.setCursor(13, 0);
-  if (bpm < 100) {
-    lcd.print(" ");
-  }
-  lcd.print(bpm);
+    // Write the bpm at the top right of the display
+    lcd.setCursor(12, 0);
+    lcd.write(byte(beat_chr));
+    lcd.setCursor(13, 0);
+    if (bpm < 100) {
+        lcd.print(" ");
+    }
+    lcd.print(bpm);
 
-  // Current song position
-  lcd.setCursor(0, 1);
-  lcd.print("b");
-  lcd.setCursor(1, 1);
-  lcd.print(beat);
+    // Current song position
+    lcd.setCursor(0, 1);
+    lcd.print("b");
+    lcd.setCursor(1, 1);
+    lcd.print(beat);
 }
 
 void handleStart() {
-  playing = true;
-  beat = 0;
-  play_note();
-  ui_dirty = true;
+    playing = true;
+    beat = 0;
+    play_note();
+    ui_dirty = true;
 };
 
 void handleContinue() {
-  playing = true;
-  play_note();
-  ui_dirty = true;
+    playing = true;
+    play_note();
+    ui_dirty = true;
 };
 
 void handleStop() {
-  playing = false;
-  ui_dirty = true;
-  reset_midi();
+    playing = false;
+    ui_dirty = true;
+    reset_midi();
 };
 
 void handleSongPosition(unsigned int beats) {
-  beat = beats;
-  ui_dirty = true;
+    beat = beats;
+    ui_dirty = true;
 };
 
 //void handleNoteOff(byte channel, byte note, byte velocity);
@@ -234,68 +251,78 @@ void handleSongPosition(unsigned int beats) {
 //void handleSystemReset(void);
 
 void handleClock() {
-  // Calculate BPM from 24ppqn
-  unsigned long now = micros();
-  unsigned long pulse_len;
-  int new_bpm;
+    // Calculate BPM from 24ppqn
+    unsigned long now = micros();
+    unsigned long pulse_len;
+    int new_bpm;
 
-  microseconds_pqn[pulse_count % CPQN] = now - last_clock_pulse;
-  last_clock_pulse = now;
+    microseconds_pqn[pulse_count % CPQN] = now - last_clock_pulse;
+    last_clock_pulse = now;
 
-  // Handle playing notes at the right time
-  pulse_count += 1;
-  // debug(" oh " + beat);
-  if (pulse_count % 6 == 0) {
-    beat += 1;  // Increment the sequences beat counter
-    play_note();
-    ui_dirty = true;
-  }
-
-  // Handle the beating clock
-  if (pulse_count == PPQN) {
-    beat_chr = !beat_chr; // Swap the beat character
-    ui_dirty = true;
-    pulse_count = 0;
-
-
-    // Only calculate the current bpm once per beat
-    // Average pulse length
-    unsigned long sum = 0L;
-    for (int i = 0 ; i < CPQN ; i++) {
-      if (microseconds_pqn[i] > 0) {
-        sum += microseconds_pqn[i];
-      }
+    // Handle playing notes at the right time
+    pulse_count += 1;
+    // debug(" oh " + beat);
+    if (pulse_count % 6 == 0) {
+        beat += 1;  // Increment the sequences beat counter
+        play_note();
+        ui_dirty = true;
     }
-    pulse_len = sum / CPQN;
 
-    new_bpm = (oneMinuteInMicroseconds / (pulse_len * CPQN)) * (timeSignatureDenominator / 4.0);
-    if (new_bpm != bpm) {
-      bpm = new_bpm;
-      ui_dirty = true;
+    // Handle the beating clock
+    if (pulse_count == PPQN) {
+        beat_chr = !beat_chr; // Swap the beat character
+        ui_dirty = true;
+        pulse_count = 0;
+
+		// If using an external clock, work out the bpm
+		if (internal_clock_source == false) {
+			// Only calculate the current bpm once per beat
+			// Average pulse length
+			unsigned long sum = 0L;
+			for (int i = 0 ; i < CPQN ; i++) {
+				if (microseconds_pqn[i] > 0) {
+					sum += microseconds_pqn[i];
+				}
+			}
+			pulse_len = sum / CPQN;
+
+			new_bpm = bpm_from_pulse_len(pulse_len);
+			if (new_bpm != bpm) {
+				bpm = new_bpm;
+				ui_dirty = true;
+			}
+		}
     }
-  }
+}
+
+int bpm_from_pulse_len(unsigned long pulse_len) {
+    return (oneMinuteInMicroseconds / (pulse_len * CPQN)) * (timeSignatureDenominator / 4.0);
+}
+
+unsigned long pulse_len_from_bpm(int bpm) {
+    return oneMinuteInMicroseconds / (bpm * CPQN);
 }
 
 void play_note() {
-  int current_note = beat % (sizeof(notes) / sizeof(Note));
-  int last_note;
-  if (current_note > 0) {
-    last_note = current_note - 1;
-  } else {
-    last_note = (sizeof(notes) / sizeof(Note)) - 1;
-  }
+    int current_note = beat % (sizeof(notes) / sizeof(Note));
+    int last_note;
+    if (current_note > 0) {
+        last_note = current_note - 1;
+    } else {
+        last_note = (sizeof(notes) / sizeof(Note)) - 1;
+    }
 
-  if (legato) {
-    MIDI.sendNoteOn(notes[current_note].note + transpose, notes[current_note].velocity, 1);
-    MIDI.sendNoteOff(notes[last_note].note + transpose, notes[last_note].velocity, 1);
-  } else {
-    MIDI.sendNoteOff(notes[last_note].note + transpose, notes[last_note].velocity, 1);
-    MIDI.sendNoteOn(notes[current_note].note + transpose, notes[current_note].velocity, 1);
+    if (legato) {
+        MIDI.sendNoteOn(notes[current_note].note + transpose, notes[current_note].velocity, 1);
+        MIDI.sendNoteOff(notes[last_note].note + transpose, notes[last_note].velocity, 1);
+    } else {
+        MIDI.sendNoteOff(notes[last_note].note + transpose, notes[last_note].velocity, 1);
+        MIDI.sendNoteOn(notes[current_note].note + transpose, notes[current_note].velocity, 1);
 
-  }
-  lcd.setCursor(10, 1);
-  lcd.print(current_note);
+    }
+    lcd.setCursor(10, 1);
+    lcd.print(current_note);
 
-  lcd.setCursor(13, 1);
-  lcd.print(notes[current_note].note + transpose);
+    lcd.setCursor(13, 1);
+    lcd.print(notes[current_note].note + transpose);
 };
