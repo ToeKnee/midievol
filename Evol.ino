@@ -11,11 +11,17 @@
 */
 
 // include the library code:
+#include <Bounce2.h>
 #include <LiquidCrystal.h>
 #include <MIDI.h>
 
 // Initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(12, 11, 7, 8, 9, 10);
+
+const byte playPin = 6;
+const byte stopPin = 5;
+Bounce debouncer_play = Bounce();
+Bounce debouncer_stop = Bounce();
 
 // Create the Midi interface
 MIDI_CREATE_DEFAULT_INSTANCE();
@@ -84,7 +90,7 @@ byte timeSignatureDenominator = 4; // For show only, use the actual time signatu
 
 // State
 char mode[] = "SEQ";  // or DRM or PLY?
-bool playing = true;
+bool playing = false;
 unsigned int beat = 0;
 int transpose = -12;
 bool legato = true;
@@ -111,9 +117,9 @@ Sequence seq_1 = {
 };
 
 void debug(char msg[]) {
-    //Serial.println(msg);
-    lcd.setCursor(0, 1);
-    lcd.print(msg);
+    Serial.println(msg);
+    //lcd.setCursor(0, 1);
+    //lcd.print(msg);
 }
 
 void setup() {
@@ -122,8 +128,18 @@ void setup() {
     lcd.createChar(1, heart);
     lcd.createChar(2, play);
 
-    // set up the LCD's number of columns and rows:
+    // Set up the LCD's number of columns and rows:
     lcd.begin(16, 2);
+
+    // Set up the physical buttons
+    pinMode(playPin, INPUT_PULLUP);
+    pinMode(stopPin, INPUT_PULLUP);
+
+    // Debounce the buttons
+    debouncer_play.attach(playPin);
+    debouncer_play.interval(1); // interval in ms
+    debouncer_stop.attach(stopPin);
+    debouncer_stop.interval(1); // interval in ms
 
     // Set up midi
     //debug("MIDI listen");
@@ -134,11 +150,11 @@ void setup() {
     MIDI.setHandleSongPosition(handleSongPosition);
     MIDI.setHandleClock(handleClock);
 
-    // Set up Serial for Hairless MIDI Bridge
+    // Set up Serial for debugging
     Serial.begin(115200);
 
     reset_midi();
-	microseconds_per_pulse = pulse_len_from_bpm(bpm);
+    microseconds_per_pulse = pulse_len_from_bpm(bpm);
 
     // Draw the ui for the first time
     draw_ui();
@@ -150,8 +166,8 @@ void loop() {
     // If internal clock and playing
     if (internal_clock_source && playing) {
         unsigned long now = micros();
-		if (next_clock_pulse <= now) {
-			next_clock_pulse = now + microseconds_per_pulse;
+        if (next_clock_pulse <= now) {
+            next_clock_pulse = now + microseconds_per_pulse;
 
             // Fire clock pulse
             using namespace midi;
@@ -161,6 +177,24 @@ void loop() {
         }
     }
 
+    // Check physical buttons
+    if (debouncer_play.update()) {
+        if (debouncer_play.fell()) {
+            playing = !playing;  // Play or pause
+            if (playing == false) {
+                handleStop();
+            }
+            ui_dirty = true;
+        }
+    }
+    if (debouncer_stop.update()) {
+        if (debouncer_stop.fell()) {
+            handleStop();
+            beat = 0;
+        }
+    }
+
+    // Redraw the UI if necessary
     if (ui_dirty) {
         draw_ui();
     }
@@ -179,7 +213,6 @@ void reset_midi() {
     for (int i = 0; i < CPQN; i++) {
         microseconds_pqn[i] = 0;
     }
-    //debug("         ");
 }
 
 void draw_ui() {
@@ -269,29 +302,29 @@ void handleClock() {
     }
 
     // Handle the beating clock
-    if (pulse_count == PPQN) {
+    if (pulse_count == CPQN) {
         beat_chr = !beat_chr; // Swap the beat character
         ui_dirty = true;
         pulse_count = 0;
 
-		// If using an external clock, work out the bpm
-		if (internal_clock_source == false) {
-			// Only calculate the current bpm once per beat
-			// Average pulse length
-			unsigned long sum = 0L;
-			for (int i = 0 ; i < CPQN ; i++) {
-				if (microseconds_pqn[i] > 0) {
-					sum += microseconds_pqn[i];
-				}
-			}
-			pulse_len = sum / CPQN;
+        // If using an external clock, work out the bpm
+        if (internal_clock_source == false) {
+            // Only calculate the current bpm once per beat
+            // Average pulse length
+            unsigned long sum = 0L;
+            for (int i = 0 ; i < CPQN ; i++) {
+                if (microseconds_pqn[i] > 0) {
+                    sum += microseconds_pqn[i];
+                }
+            }
+            pulse_len = sum / CPQN;
 
-			new_bpm = bpm_from_pulse_len(pulse_len);
-			if (new_bpm != bpm) {
-				bpm = new_bpm;
-				ui_dirty = true;
-			}
-		}
+            new_bpm = bpm_from_pulse_len(pulse_len);
+            if (new_bpm != bpm) {
+                bpm = new_bpm;
+                ui_dirty = true;
+            }
+        }
     }
 }
 
