@@ -24,8 +24,11 @@ Bounce debouncer_play = Bounce();
 Bounce debouncer_stop = Bounce();
 
 // Create the Midi interface
-MIDI_CREATE_DEFAULT_INSTANCE();
-
+struct MIDISettings : public midi::DefaultSettings {
+    static const unsigned SysExMaxSize = 128;
+    static const bool UseRunningStatus = false;
+};
+MIDI_CREATE_CUSTOM_INSTANCE(HardwareSerial, Serial1, MIDI, MIDISettings);
 
 bool ui_dirty = false;
 
@@ -150,6 +153,8 @@ void setup() {
     MIDI.setHandleSongPosition(handleSongPosition);
     MIDI.setHandleClock(handleClock);
 
+    // Set up Serial for MIDI
+    Serial1.begin(31250);
     // Set up Serial for debugging
     Serial.begin(115200);
 
