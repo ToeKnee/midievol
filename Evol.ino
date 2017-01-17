@@ -285,9 +285,11 @@ void draw_ui() {
     lcd.setCursor(1, 1);
     lcd.print(beat);
 
-    // DEBUG note
-    lcd.setCursor(13, 1);
-    lcd.print(notes[0].note);
+    // Display note
+    lcd.setCursor(12, 1);
+    String note_display;
+    note_name(note_display, notes[0].note);
+    lcd.print(note_display);
 }
 
 void handleStart() {
@@ -420,3 +422,23 @@ void play_note() {
         }
     }
 };
+
+
+void note_name(String &note, byte note_number) {
+    const String Notes[] = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+    // Handle special cases first
+    if (note_number == REST) {
+        note = "REST";
+    } else if (note_number == TIE) {
+        note = "TIE ";
+    } else {
+        note = Notes[(note_number % 12)];
+        if (note.length() == 1) {
+            note += " ";
+        }
+        note += (note_number / 12); // Octave
+        if (note.length() == 3) {
+            note += " ";
+        }
+    }
+}
