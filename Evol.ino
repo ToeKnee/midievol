@@ -186,9 +186,10 @@ void loop() {
     // Check physical buttons
     if (debouncer_play.update()) {
         if (debouncer_play.fell()) {
-            playing = !playing;  // Play or pause
-            if (playing == false) {
-                handleStop();
+            if (playing) {
+                handlePause();
+            } else {
+                handleStart();
             }
             ui_dirty = true;
         }
@@ -252,21 +253,30 @@ void draw_ui() {
 }
 
 void handleStart() {
-    playing = true;
-    beat = 0;
+    if (internal_clock_source) {
+        next_clock_pulse = micros() + microseconds_per_pulse;
+    }
+
     play_note();
+    playing = true;
     ui_dirty = true;
 };
 
 void handleContinue() {
-    playing = true;
     play_note();
+    playing = true;
+    ui_dirty = true;
+};
+
+void handlePause() {
+    playing = false;
     ui_dirty = true;
 };
 
 void handleStop() {
     playing = false;
     ui_dirty = true;
+    beat = 0;
     reset_midi();
 };
 
