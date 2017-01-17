@@ -12,16 +12,23 @@
 
 // include the library code:
 #include <Bounce2.h>
+#include <ClickEncoder.h>
 #include <LiquidCrystal.h>
 #include <MIDI.h>
+#include <TimerOne.h>
 
 // Initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(12, 11, 7, 8, 9, 10);
 
+// Physical buttons
 const byte playPin = 6;
 const byte stopPin = 5;
 Bounce debouncer_play = Bounce();
 Bounce debouncer_stop = Bounce();
+
+// 4 x 4 Matrix
+const byte stepsPerNotch = 4;
+ClickEncoder *encoder_1;//(23, 22);
 
 // Create the Midi interface
 struct MIDISettings : public midi::DefaultSettings {
@@ -32,6 +39,7 @@ MIDI_CREATE_CUSTOM_INSTANCE(HardwareSerial, Serial1, MIDI, MIDISettings);
 
 bool ui_dirty = false;
 
+// Custom Characters
 byte heart[8] = {
     0b00000,
     0b01010,
@@ -135,6 +143,14 @@ void setup() {
     pinMode(playPin, INPUT_PULLUP);
     pinMode(stopPin, INPUT_PULLUP);
 
+    // Set up 4 x 4 encoder matrix
+    encoder_1 = new ClickEncoder(22, 23, 24, stepsPerNotch);
+    encoder_1->setAccelerationEnabled(true);
+
+    // Set up encoder timers
+    Timer1.initialize(1000);
+    Timer1.attachInterrupt(timerIsr);
+
     // Debounce the buttons
     debouncer_play.attach(playPin);
     debouncer_play.interval(1); // interval in ms
@@ -201,18 +217,28 @@ void loop() {
         }
     }
 
+    // Check the 4 x 4 matrix
+    int value = encoder_1->getValue();
+    if (value != 0) {
+        notes[0].note += value;
+        ui_dirty = true;
+    }
+
     // Redraw the UI if necessary
     if (ui_dirty) {
         draw_ui();
     }
 }
 
+void timerIsr() {
+    encoder_1->service();
+}
+
 void reset_midi() {
-    //debug("Resetting");
     // Reset each channel
-    for (int i = 0; i <= 16; i++) {
+    for (int i = 0; i < 16; i++) {
         // Reset each note on each channel
-        for (int j = 0; j <= 128; j++) {
+        for (int j = 0; j < 128; j++) {
             MIDI.sendNoteOff(j, 0, i);
         }
     }
@@ -250,6 +276,10 @@ void draw_ui() {
     lcd.print("b");
     lcd.setCursor(1, 1);
     lcd.print(beat);
+
+    // DEBUG note
+    lcd.setCursor(13, 1);
+    lcd.print(notes[0].note);
 }
 
 void handleStart() {
@@ -368,9 +398,4 @@ void play_note() {
         MIDI.sendNoteOn(notes[current_note].note + transpose, notes[current_note].velocity, 1);
 
     }
-    lcd.setCursor(10, 1);
-    lcd.print(current_note);
-
-    lcd.setCursor(13, 1);
-    lcd.print(notes[current_note].note + transpose);
 };
