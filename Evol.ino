@@ -73,6 +73,8 @@ byte play[8] = {
     0b11000,
 };
 
+const byte REST = 128;
+const byte TIE = 129;
 struct Note {
     byte note; // 0 to 127
     byte velocity;  // 0 to 127
@@ -221,6 +223,12 @@ void loop() {
     int value = encoder_1->getValue();
     if (value != 0) {
         notes[0].note += value;
+        if (notes[0].note == 255) { // Looped round past not 0
+            notes[0].note = 129;
+        } else if (notes[0].note > 129) {  // 127 Midi notes + 2 special cases
+            notes[0].note = 0;
+        }
+
         ui_dirty = true;
     }
 
@@ -389,13 +397,26 @@ void play_note() {
     } else {
         last_note = (sizeof(notes) / sizeof(Note)) - 1;
     }
+    // Check for tied notes
+    while (notes[last_note].note == TIE) {
+        last_note -= 1;
+    }
 
-    if (legato) {
-        MIDI.sendNoteOn(notes[current_note].note + transpose, notes[current_note].velocity, 1);
-        MIDI.sendNoteOff(notes[last_note].note + transpose, notes[last_note].velocity, 1);
-    } else {
-        MIDI.sendNoteOff(notes[last_note].note + transpose, notes[last_note].velocity, 1);
-        MIDI.sendNoteOn(notes[current_note].note + transpose, notes[current_note].velocity, 1);
-
+    if (notes[current_note].note != TIE) {  // Only start and stop notes if not a tie
+        if (legato) {
+            if (notes[current_note].note != REST) {
+                MIDI.sendNoteOn(notes[current_note].note + transpose, notes[current_note].velocity, 1);
+            }
+            if (notes[last_note].note != REST) {
+                MIDI.sendNoteOff(notes[last_note].note + transpose, notes[last_note].velocity, 1);
+            }
+        } else {
+            if (notes[last_note].note != REST) {
+                MIDI.sendNoteOff(notes[last_note].note + transpose, notes[last_note].velocity, 1);
+            }
+            if (notes[current_note].note != REST) {
+                MIDI.sendNoteOn(notes[current_note].note + transpose, notes[current_note].velocity, 1);
+            }
+        }
     }
 };
