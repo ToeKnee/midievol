@@ -119,12 +119,6 @@ Sequence seq_1 = {
     notes,
 };
 
-void debug(char msg[]) {
-    Serial.println(msg);
-    //lcd.setCursor(0, 1);
-    //lcd.print(msg);
-}
-
 void setup() {
     // Set up the custom characters
     lcd.createChar(0, empty_heart);
@@ -148,7 +142,6 @@ void setup() {
     debouncer_stop.interval(1); // interval in ms
 
     // Set up midi
-    //debug("MIDI listen");
     MIDI.begin(MIDI_CHANNEL_OMNI);  // Listen to all incoming messages
     MIDI.setHandleStart(handleStart);
     MIDI.setHandleContinue(handleContinue);
@@ -307,7 +300,6 @@ void handleClock() {
 
     // Handle playing notes at the right time
     pulse_count += 1;
-    // debug(" oh " + beat);
     if (pulse_count % 6 == 0) {
         beat += 1;  // Increment the sequences beat counter
         play_note();
