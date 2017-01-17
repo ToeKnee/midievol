@@ -103,8 +103,8 @@ byte timeSignatureDenominator = 4; // For show only, use the actual time signatu
 char mode[] = "SEQ";  // or DRM or PLY?
 bool playing = false;
 unsigned int beat = 0;
-int transpose = -12;
-bool legato = true;
+int transpose = 0;
+bool legato = false;
 bool internal_clock_source = true;
 
 // Dummy sequence stuff
