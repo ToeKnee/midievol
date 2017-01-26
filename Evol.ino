@@ -28,7 +28,7 @@ Bounce debouncer_stop = Bounce();
 
 // 4 x 4 Matrix
 const byte stepsPerNotch = 4;
-ClickEncoder *encoder_1;//(23, 22);
+ClickEncoder *encoder_0, *encoder_1, *encoder_2, *encoder_3;
 
 // Create the Midi interface
 struct MIDISettings : public midi::DefaultSettings {
@@ -102,6 +102,7 @@ byte timeSignatureNumerator = 4; // For show only, use the actual time signature
 byte timeSignatureDenominator = 4; // For show only, use the actual time signature denominator
 
 // State
+byte last_note_edited;
 char mode[] = "SEQ";  // or DRM or PLY?
 bool playing = false;
 unsigned int beat = 0;
@@ -111,16 +112,10 @@ bool internal_clock_source = true;
 
 // Dummy sequence stuff
 Note notes[] { // 64?
-    {60, 100},
-    {64, 100},
-    {65, 100},
-    {67, 120},
-    {71, 127},
-    {72, 110},
-    {71, 100},
-    {67, 100},
-    {65, 100},
-    {64, 100},
+    {random(130), 100},
+    {random(130), 100},
+    {random(130), 100},
+    {random(130), 120},
 };
 
 Sequence seq_1 = {
@@ -146,8 +141,14 @@ void setup() {
     pinMode(stopPin, INPUT_PULLUP);
 
     // Set up 4 x 4 encoder matrix
-    encoder_1 = new ClickEncoder(22, 23, 24, stepsPerNotch);
+    encoder_0 = new ClickEncoder(22, 23, 24, stepsPerNotch);
+    encoder_0->setAccelerationEnabled(true);
+    encoder_1 = new ClickEncoder(25, 26, 27, stepsPerNotch);
     encoder_1->setAccelerationEnabled(true);
+    encoder_2 = new ClickEncoder(28, 29, 30, stepsPerNotch);
+    encoder_2->setAccelerationEnabled(true);
+    encoder_3 = new ClickEncoder(31, 32, 33, stepsPerNotch);
+    encoder_3->setAccelerationEnabled(true);
 
     // Set up encoder timers
     Timer1.initialize(1000);
@@ -220,17 +221,10 @@ void loop() {
     }
 
     // Check the 4 x 4 matrix
-    int value = encoder_1->getValue();
-    if (value != 0) {
-        notes[0].note += value;
-        if (notes[0].note == 255) { // Looped round past not 0
-            notes[0].note = 129;
-        } else if (notes[0].note > 129) {  // 127 Midi notes + 2 special cases
-            notes[0].note = 0;
-        }
-
-        ui_dirty = true;
-    }
+    update_note(0, encoder_0->getValue());
+    update_note(1, encoder_1->getValue());
+    update_note(2, encoder_2->getValue());
+    update_note(3, encoder_3->getValue());
 
     // Redraw the UI if necessary
     if (ui_dirty) {
@@ -238,8 +232,26 @@ void loop() {
     }
 }
 
+void update_note(byte note, byte value) {
+    if (value != 0) {
+        notes[note].note += value;
+        if (notes[note].note == 255) { // Looped round 0 backwards
+            notes[note].note = 129;
+        } else if (notes[note].note > 129) {  // 127 Midi notes + 2 special cases
+            notes[note].note = 0;
+        }
+
+        last_note_edited = note;
+
+        ui_dirty = true;
+    }
+}
+
 void timerIsr() {
+    encoder_0->service();
     encoder_1->service();
+    encoder_2->service();
+    encoder_3->service();
 }
 
 void reset_midi() {
@@ -285,10 +297,10 @@ void draw_ui() {
     lcd.setCursor(1, 1);
     lcd.print(beat);
 
-    // Display note
+    // Display last note edited
     lcd.setCursor(12, 1);
     String note_display;
-    note_name(note_display, notes[0].note);
+    note_name(note_display, notes[last_note_edited].note);
     lcd.print(note_display);
 }
 
