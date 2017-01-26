@@ -23,8 +23,10 @@ LiquidCrystal lcd(12, 11, 7, 8, 9, 10);
 // Physical buttons
 const byte playPin = 6;
 const byte stopPin = 5;
+const byte shiftPin = 4;
 Bounce debouncer_play = Bounce();
 Bounce debouncer_stop = Bounce();
+Bounce debouncer_shift = Bounce();
 
 // 4 x 4 Matrix
 const byte stepsPerNotch = 4;
@@ -73,6 +75,17 @@ byte play[8] = {
     0b11000,
 };
 
+byte shift_char[8] = {
+    0b00100,
+    0b01010,
+    0b10001,
+    0b01010,
+    0b01010,
+    0b01010,
+    0b01110,
+    0b00000
+};
+
 const byte REST = 128;
 const byte TIE = 129;
 struct Note {
@@ -89,7 +102,7 @@ struct Sequence {
 // Clock
 const byte CPQN = 24;  // Midi Clock
 const byte PPQN = 96;  // Pulse MTC
-int bpm = 120; // could be byte?
+byte bpm = 120;
 byte beat_chr = 0; // 1 for filled heart
 unsigned int pulse_count = 0;
 int microseconds_pqn[CPQN];  // So we can average the pulse lengths
@@ -102,8 +115,14 @@ byte timeSignatureNumerator = 4; // For show only, use the actual time signature
 byte timeSignatureDenominator = 4; // For show only, use the actual time signature denominator
 
 // State
+typedef enum Mode{
+    sequencer,
+    drum,
+    song,
+};
+Mode mode;
 byte last_note_edited;
-char mode[] = "SEQ";  // or DRM or PLY?
+bool shift = false;
 bool playing = false;
 unsigned int beat = 0;
 int transpose = 0;
@@ -129,6 +148,7 @@ void setup() {
     lcd.createChar(0, empty_heart);
     lcd.createChar(1, heart);
     lcd.createChar(2, play);
+    lcd.createChar(3, shift_char);
 
     // Set up the LCD's number of columns and rows:
     lcd.begin(16, 2);
@@ -139,6 +159,7 @@ void setup() {
     // Set up the physical buttons
     pinMode(playPin, INPUT_PULLUP);
     pinMode(stopPin, INPUT_PULLUP);
+    pinMode(shiftPin, INPUT_PULLUP);
 
     // Set up 4 x 4 encoder matrix
     encoder_0 = new ClickEncoder(22, 23, 24, stepsPerNotch);
@@ -159,6 +180,8 @@ void setup() {
     debouncer_play.interval(1); // interval in ms
     debouncer_stop.attach(stopPin);
     debouncer_stop.interval(1); // interval in ms
+    debouncer_shift.attach(shiftPin);
+    debouncer_shift.interval(1); // interval in ms
 
     // Set up midi
     MIDI.begin(MIDI_CHANNEL_OMNI);  // Listen to all incoming messages
@@ -175,6 +198,9 @@ void setup() {
 
     reset_midi();
     microseconds_per_pulse = pulse_len_from_bpm(bpm);
+
+    // Set the mode
+    mode = sequencer;
 
     // Clear UI
     lcd.setCursor(0, 0);
@@ -219,12 +245,21 @@ void loop() {
             beat = 0;
         }
     }
+    if (debouncer_shift.update()) {
+        if (debouncer_shift.fell()) {
+            shift = true;
+            ui_dirty = true;
+        } else if (debouncer_shift.rose()) {
+            shift = false;
+            ui_dirty = true;
+        }
+    }
 
     // Check the 4 x 4 matrix
-    update_note(0, encoder_0->getValue());
-    update_note(1, encoder_1->getValue());
-    update_note(2, encoder_2->getValue());
-    update_note(3, encoder_3->getValue());
+    handleEncoder(0, encoder_0->getValue());
+    handleEncoder(1, encoder_1->getValue());
+    handleEncoder(2, encoder_2->getValue());
+    handleEncoder(3, encoder_3->getValue());
 
     // Redraw the UI if necessary
     if (ui_dirty) {
@@ -232,19 +267,41 @@ void loop() {
     }
 }
 
-void update_note(byte note, byte value) {
+void handleEncoder(byte encoder, byte value) {
     if (value != 0) {
-        notes[note].note += value;
-        if (notes[note].note == 255) { // Looped round 0 backwards
-            notes[note].note = 129;
-        } else if (notes[note].note > 129) {  // 127 Midi notes + 2 special cases
-            notes[note].note = 0;
+        // Sequencer mode
+        Serial.println(mode);
+        Serial.println(mode == sequencer);
+        if (mode == sequencer) {
+            // Default unshifted case, edit the note
+            if (!shift) {
+                /* For the first sixteen the encoder and the note number match.
+                   Will have to offset this for the correct page when we
+                   implement the full 64 steps.
+                */
+                update_note(encoder, value);
+            } else {
+                // Shift mode, each encoder has a different alternative function
+                if (encoder == 0) {  // Handle BPM changes
+                    adjustBPM(value);
+                    ui_dirty = true;
+                }
+            }
         }
-
-        last_note_edited = note;
-
-        ui_dirty = true;
     }
+}
+
+void update_note(byte note, byte value) {
+    notes[note].note += value;
+    if (notes[note].note == 255) { // Looped round 0 backwards
+        notes[note].note = 129;
+    } else if (notes[note].note > 129) {  // 127 Midi notes + 2 special cases
+        notes[note].note = 0;
+    }
+
+    last_note_edited = note;
+
+    ui_dirty = true;
 }
 
 void timerIsr() {
@@ -272,7 +329,9 @@ void draw_ui() {
     ui_dirty = false;
     // Write the mode
     lcd.setCursor(0, 0);
-    lcd.print(mode);
+    if (mode == sequencer) {
+        lcd.print("SEQ");
+    }
 
     // Write Play State
     lcd.setCursor(10, 0);
@@ -290,6 +349,14 @@ void draw_ui() {
         lcd.print(" ");
     }
     lcd.print(bpm);
+
+    // Display Shift status
+    lcd.setCursor(4, 0);
+    if (shift) {
+        lcd.write(byte(3));
+    } else {
+        lcd.write(" ");
+    }
 
     // Display last note edited
     lcd.setCursor(12, 1);
@@ -387,6 +454,12 @@ void handleClock() {
             }
         }
     }
+}
+
+void adjustBPM(byte adjustment) {
+    bpm += adjustment;
+    microseconds_per_pulse = pulse_len_from_bpm(bpm);
+    ui_dirty = true;
 }
 
 int bpm_from_pulse_len(unsigned long pulse_len) {
