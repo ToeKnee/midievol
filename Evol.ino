@@ -270,8 +270,6 @@ void loop() {
 void handleEncoder(byte encoder, byte value) {
     if (value != 0) {
         // Sequencer mode
-        Serial.println(mode);
-        Serial.println(mode == sequencer);
         if (mode == sequencer) {
             // Default unshifted case, edit the note
             if (!shift) {
