@@ -291,12 +291,6 @@ void draw_ui() {
     }
     lcd.print(bpm);
 
-    // Current song position
-    lcd.setCursor(0, 1);
-    lcd.print("b");
-    lcd.setCursor(1, 1);
-    lcd.print(beat);
-
     // Display last note edited
     lcd.setCursor(12, 1);
     String note_display;
