@@ -121,7 +121,7 @@ typedef enum Mode{
     song,
 };
 Mode mode;
-byte last_note_edited;
+byte display_note;
 bool shift = false;
 bool playing = false;
 unsigned int beat = 0;
@@ -299,7 +299,7 @@ void update_note(byte note, byte value) {
         notes[note].note = 0;
     }
 
-    last_note_edited = note;
+    display_note = note;
 
     ui_dirty = true;
 }
@@ -363,7 +363,7 @@ void draw_ui() {
     // Display last note edited
     lcd.setCursor(12, 1);
     String note_display;
-    note_name(note_display, notes[last_note_edited].note);
+    note_name(note_display, notes[display_note].note);
     lcd.print(note_display);
 }
 
@@ -480,6 +480,10 @@ void play_note() {
     } else {
         last_note = (sizeof(notes) / sizeof(Note)) - 1;
     }
+
+    // Display the playing note
+    display_note = current_note;
+
     // Check for tied notes
     while (notes[last_note].note == TIE) {
         last_note -= 1;
