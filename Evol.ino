@@ -345,7 +345,9 @@ void draw_ui() {
     lcd.setCursor(12, 0);
     lcd.write(byte(beat_chr));
     lcd.setCursor(13, 0);
-    if (bpm < 100) {
+    if (bpm < 10) {
+        lcd.print("  ");
+    } else if (bpm < 100) {
         lcd.print(" ");
     }
     lcd.print(bpm);
