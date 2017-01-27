@@ -19,6 +19,7 @@
 
 // Initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(12, 11, 7, 8, 9, 10);
+String status_display; // Please keep <= 10 chars
 
 // Physical buttons
 const byte playPin = 6;
@@ -92,6 +93,17 @@ struct Note {
     byte note; // 0 to 127
     byte velocity;  // 0 to 127
 };
+typedef enum BeatDivision{
+    whole,
+    half,
+    quarter,
+    eigth,
+    sixteenth,
+    thirtysecondth
+};
+BeatDivision beat_divisions;
+const byte beat_division_map[] = {96, 48, 24, 12, 6, 3};
+byte beat_division = quarter;
 
 struct Sequence {
     byte id;
@@ -102,6 +114,7 @@ struct Sequence {
 // Clock
 const byte CPQN = 24;  // Midi Clock
 const byte PPQN = 96;  // Pulse MTC
+
 byte bpm = 120;
 byte beat_chr = 0; // 1 for filled heart
 unsigned int pulse_count = 0;
@@ -282,8 +295,10 @@ void handleEncoder(byte encoder, byte value) {
                 // Shift mode, each encoder has a different alternative function
                 if (encoder == 0) {  // Handle BPM changes
                     adjustBPM(value);
-                    ui_dirty = true;
+                } else if (encoder == 1) {  // Handle Beat Division Changes
+                    adjustBeatDivision(value);
                 }
+
             }
         }
     }
@@ -298,6 +313,9 @@ void update_note(byte note, byte value) {
     }
 
     display_note = note;
+    note_name(status_display, notes[display_note].note);
+    status_display += " ";
+    status_display += notes[display_note].velocity;
 
     ui_dirty = true;
 }
@@ -357,6 +375,13 @@ void draw_ui() {
     } else {
         lcd.write(" ");
     }
+
+    // Display Status
+    lcd.setCursor(0, 1);
+    while (status_display.length() <= 10) {
+        status_display += " ";
+    }
+    lcd.print(status_display);
 
     // Display last note edited
     lcd.setCursor(12, 1);
@@ -423,9 +448,11 @@ void handleClock() {
 
     // Handle playing notes at the right time
     pulse_count += 1;
-    if (pulse_count % 6 == 0) {
+
+    if (pulse_count % beat_division_map[beat_division] == 0) {
         beat += 1;  // Increment the sequences beat counter
         play_note();
+        pulse_count = 0;
         ui_dirty = true;
     }
 
@@ -433,7 +460,6 @@ void handleClock() {
     if (pulse_count == CPQN) {
         beat_chr = !beat_chr; // Swap the beat character
         ui_dirty = true;
-        pulse_count = 0;
 
         // If using an external clock, work out the bpm
         if (internal_clock_source == false) {
@@ -459,6 +485,38 @@ void handleClock() {
 void adjustBPM(byte adjustment) {
     bpm += adjustment;
     microseconds_per_pulse = pulse_len_from_bpm(bpm);
+
+    status_display = "BPM: ";
+    status_display += bpm;
+
+    ui_dirty = true;
+}
+
+void adjustBeatDivision(byte adjustment) {
+    beat_division += adjustment;
+
+    // Handle looping round the values
+    if (beat_division > 127) {
+        beat_division = 5;
+    }
+
+    status_display = "Beat: ";
+    // There are 6 possible beat divisions. Choose one.
+    beat_division = beat_division % 6;
+    if (beat_division == 0) {
+        status_display += "1/1";
+    } else if (beat_division == 1) {
+        status_display += "1/2";
+    } else if (beat_division == 2) {
+        status_display += "1/4";
+    } else if (beat_division == 3) {
+        status_display += "1/8";
+    } else if (beat_division == 4) {
+        status_display += "1/16";
+    } else if (beat_division == 5) {
+        status_display += "1/32";
+    }
+
     ui_dirty = true;
 }
 
