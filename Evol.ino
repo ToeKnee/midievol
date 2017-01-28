@@ -32,6 +32,7 @@ Bounce debouncer_shift = Bounce();
 // 4 x 4 Matrix
 const byte stepsPerNotch = 4;
 ClickEncoder *encoder_0, *encoder_1, *encoder_2, *encoder_3;
+ClickEncoder *encoder_4, *encoder_5, *encoder_6, *encoder_7;
 
 // Create the Midi interface
 struct MIDISettings : public midi::DefaultSettings {
@@ -148,6 +149,10 @@ Note notes[] { // 64?
     {random(130), 100},
     {random(130), 100},
     {random(130), 120},
+    {random(130), 100},
+    {random(130), 100},
+    {random(130), 100},
+    {random(130), 120},
 };
 
 Sequence seq_1 = {
@@ -183,6 +188,15 @@ void setup() {
     encoder_2->setAccelerationEnabled(true);
     encoder_3 = new ClickEncoder(31, 32, 33, stepsPerNotch);
     encoder_3->setAccelerationEnabled(true);
+
+    encoder_4 = new ClickEncoder(34, 35, 36, stepsPerNotch);
+    encoder_4->setAccelerationEnabled(true);
+    encoder_5 = new ClickEncoder(37, 38, 39, stepsPerNotch);
+    encoder_5->setAccelerationEnabled(true);
+    encoder_6 = new ClickEncoder(40, 41, 42, stepsPerNotch);
+    encoder_6->setAccelerationEnabled(true);
+    encoder_7 = new ClickEncoder(43, 44, 45, stepsPerNotch);
+    encoder_7->setAccelerationEnabled(true);
 
     // Set up encoder timers
     Timer1.initialize(1000);
@@ -274,6 +288,12 @@ void loop() {
     handleEncoder(2, encoder_2->getValue());
     handleEncoder(3, encoder_3->getValue());
 
+    handleEncoder(4, encoder_4->getValue());
+    handleEncoder(5, encoder_5->getValue());
+    handleEncoder(6, encoder_6->getValue());
+    handleEncoder(7, encoder_7->getValue());
+
+
     // Redraw the UI if necessary
     if (ui_dirty) {
         draw_ui();
@@ -325,6 +345,11 @@ void timerIsr() {
     encoder_1->service();
     encoder_2->service();
     encoder_3->service();
+
+    encoder_4->service();
+    encoder_5->service();
+    encoder_6->service();
+    encoder_7->service();
 }
 
 void reset_midi() {
