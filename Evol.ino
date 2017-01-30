@@ -115,7 +115,7 @@ struct Sequence {
     byte id;
     byte channel; // 16 channels
     Note* sequence;
-    byte length; // up to 256
+    byte length; // up to 256  -  0 indexed
     byte beat_division; // BeatDivision
     byte note_length; // BeatDivision
     bool note_length_from_sequence;
@@ -155,7 +155,7 @@ bool internal_clock_source = true;
 KillListNote kill_list_notes[128];
 
 // Dummy sequence stuff
-Note notes[] {
+Note notes[256] {
     {60, 100, quarter},
     {REST, 100, quarter},
     {60, 100, quarter},
@@ -170,7 +170,7 @@ Sequence sequence = {
     1,
     1,
     notes,
-    6,
+    7,  // 0 indexed
     quarter,
     quarter,
     true,
@@ -339,7 +339,9 @@ void handleEncoder(byte encoder, byte value) {
                 } else if (encoder == 1) {  // Handle Beat Division Changes
                     adjustBeatDivision(value);
                 }
-
+                else if (encoder == 4) {  // Handle Sequence Length Changes
+                    adjustSequenceLength(value);
+                }
             }
         }
     }
@@ -569,6 +571,15 @@ void adjustBeatDivision(byte adjustment) {
     ui_dirty = true;
 }
 
+void adjustSequenceLength(byte adjustment) {
+    sequence.length += adjustment;
+
+    status_display = "Steps: ";
+    status_display += sequence.length + 1;  // Display off by one.
+
+    ui_dirty = true;
+}
+
 int bpm_from_pulse_len(unsigned long pulse_len) {
     return (oneMinuteInMicroseconds / (pulse_len * CPQN)) * (timeSignatureDenominator / 4.0);
 }
@@ -578,7 +589,7 @@ unsigned long pulse_len_from_bpm(int bpm) {
 }
 
 void play_note() {
-    int current_note = beat % (sizeof(notes) / sizeof(Note));
+    int current_note = beat % (sequence.length + 1);  // Sequence length is 0 indexed
     unsigned int ticks_left;
     if (sequence.note_length_from_sequence) {
         ticks_left = beat_division_map[sequence.note_length];
