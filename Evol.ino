@@ -93,6 +93,13 @@ const byte TIE = 129;
 struct Note {
     byte note; // 0 to 127
     byte velocity;  // 0 to 127
+    byte note_length; // BeatDivision
+};
+
+struct KillListNote {
+    byte note;
+    byte channel;
+    unsigned int ticks_left;
 };
 typedef enum BeatDivision{
     whole,
@@ -102,14 +109,16 @@ typedef enum BeatDivision{
     sixteenth,
     thirtysecondth
 };
-BeatDivision beat_divisions;
 const byte beat_division_map[] = {96, 48, 24, 12, 6, 3};
-byte beat_division = quarter;
 
 struct Sequence {
     byte id;
     byte channel; // 16 channels
     Note* sequence;
+    byte length; // up to 256
+    byte beat_division; // BeatDivision
+    byte note_length; // BeatDivision
+    bool note_length_from_sequence;
 };
 
 // Clock
@@ -140,25 +149,31 @@ bool shift = false;
 bool playing = false;
 unsigned int beat = 0;
 int transpose = 0;
-bool legato = false;
 bool internal_clock_source = true;
 
+// Kill list of playing notes
+KillListNote kill_list_notes[128];
+
 // Dummy sequence stuff
-Note notes[] { // 64?
-    {random(130), 100},
-    {random(130), 100},
-    {random(130), 100},
-    {random(130), 120},
-    {random(130), 100},
-    {random(130), 100},
-    {random(130), 100},
-    {random(130), 120},
+Note notes[] {
+    {60, 100, quarter},
+    {REST, 100, quarter},
+    {60, 100, quarter},
+    {TIE, 120, quarter},
+    {TIE, 100, quarter},
+    {TIE, 100, quarter},
+    {30, 100, quarter},
+    {90, 120, quarter},
 };
 
-Sequence seq_1 = {
+Sequence sequence = {
     1,
     1,
     notes,
+    6,
+    quarter,
+    quarter,
+    true,
 };
 
 void setup() {
@@ -223,7 +238,13 @@ void setup() {
     // Set up Serial for debugging
     Serial.begin(115200);
 
-    reset_midi();
+    // Set up the kill list
+    init_kill_list();
+
+    // Reset midi
+    panic();
+
+    // Work out the pulse length
     microseconds_per_pulse = pulse_len_from_bpm(bpm);
 
     // Set the mode
@@ -352,7 +373,7 @@ void timerIsr() {
     encoder_7->service();
 }
 
-void reset_midi() {
+void panic() {
     // Reset each channel
     for (int i = 0; i < 16; i++) {
         // Reset each note on each channel
@@ -434,13 +455,14 @@ void handleContinue() {
 void handlePause() {
     playing = false;
     ui_dirty = true;
+    handle_kill_all();
 };
 
 void handleStop() {
     playing = false;
     ui_dirty = true;
     beat = 0;
-    reset_midi();
+    handle_kill_all();
 };
 
 void handleSongPosition(unsigned int beats) {
@@ -473,13 +495,15 @@ void handleClock() {
 
     // Handle playing notes at the right time
     pulse_count += 1;
-
-    if (pulse_count % beat_division_map[beat_division] == 0) {
+    if (pulse_count % beat_division_map[sequence.beat_division] == 0) {
         beat += 1;  // Increment the sequences beat counter
         play_note();
         pulse_count = 0;
         ui_dirty = true;
     }
+
+    // Handle the kill list
+    handle_kill_list();
 
     // Handle the beating clock
     if (pulse_count == CPQN) {
@@ -518,27 +542,27 @@ void adjustBPM(byte adjustment) {
 }
 
 void adjustBeatDivision(byte adjustment) {
-    beat_division += adjustment;
+    sequence.beat_division += adjustment;
 
     // Handle looping round the values
-    if (beat_division > 127) {
-        beat_division = 5;
+    if (sequence.beat_division > 127) {
+        sequence.beat_division = 5;
     }
 
     status_display = "Beat: ";
     // There are 6 possible beat divisions. Choose one.
-    beat_division = beat_division % 6;
-    if (beat_division == 0) {
+    sequence.beat_division = sequence.beat_division % 6;
+    if (sequence.beat_division == 0) {
         status_display += "1/1";
-    } else if (beat_division == 1) {
+    } else if (sequence.beat_division == 1) {
         status_display += "1/2";
-    } else if (beat_division == 2) {
+    } else if (sequence.beat_division == 2) {
         status_display += "1/4";
-    } else if (beat_division == 3) {
+    } else if (sequence.beat_division == 3) {
         status_display += "1/8";
-    } else if (beat_division == 4) {
+    } else if (sequence.beat_division == 4) {
         status_display += "1/16";
-    } else if (beat_division == 5) {
+    } else if (sequence.beat_division == 5) {
         status_display += "1/32";
     }
 
@@ -555,40 +579,88 @@ unsigned long pulse_len_from_bpm(int bpm) {
 
 void play_note() {
     int current_note = beat % (sizeof(notes) / sizeof(Note));
-    int last_note;
-    if (current_note > 0) {
-        last_note = current_note - 1;
+    unsigned int ticks_left;
+    if (sequence.note_length_from_sequence) {
+        ticks_left = beat_division_map[sequence.note_length];
     } else {
-        last_note = (sizeof(notes) / sizeof(Note)) - 1;
+        ticks_left = beat_division_map[notes[current_note].note_length];
     }
 
     // Display the playing note
     display_note = current_note;
 
     // Check for tied notes
-    while (notes[last_note].note == TIE) {
-        last_note -= 1;
+    byte i = 1;  // Start at 1, 0 is current_note
+    while (notes[(beat + i) % (sizeof(notes) / sizeof(Note))].note == TIE) {
+        if (sequence.note_length_from_sequence) {
+            ticks_left += beat_division_map[sequence.note_length];
+        } else {
+            ticks_left += beat_division_map[notes[current_note].note_length];
+        }
+
+        i++;
+        if (i == 255) {
+            // Hopefully there aren't 255 TIE's, but you never know.
+            break;
+        }
     }
 
-    if (notes[current_note].note != TIE) {  // Only start and stop notes if not a tie
-        if (legato) {
-            if (notes[current_note].note != REST) {
-                MIDI.sendNoteOn(notes[current_note].note + transpose, notes[current_note].velocity, 1);
-            }
-            if (notes[last_note].note != REST) {
-                MIDI.sendNoteOff(notes[last_note].note + transpose, notes[last_note].velocity, 1);
-            }
-        } else {
-            if (notes[last_note].note != REST) {
-                MIDI.sendNoteOff(notes[last_note].note + transpose, notes[last_note].velocity, 1);
-            }
-            if (notes[current_note].note != REST) {
-                MIDI.sendNoteOn(notes[current_note].note + transpose, notes[current_note].velocity, 1);
-            }
-        }
+    // Play the note
+    if (notes[current_note].note != TIE && notes[current_note].note != REST) {
+        MIDI.sendNoteOn(notes[current_note].note + transpose, notes[current_note].velocity, sequence.channel);
+        add_to_kill_list(notes[current_note].note + transpose, sequence.channel, ticks_left);
     }
 };
 
+void init_kill_list() {
+    // Set default values for the kill list
+    KillListNote kill_note {
+        0,
+        0,
+        0
+    };
+
+    for (byte i = 0; i < sizeof(kill_list_notes) / sizeof(KillListNote); i++) {
+        kill_list_notes[i] = kill_note;
+    }
+}
+
+
+void add_to_kill_list(byte note, byte channel, unsigned int note_length_ticks) {
+    KillListNote kill_note {
+        note,
+        channel,
+        note_length_ticks
+    };
+    for (byte i = 0; i < sizeof(kill_list_notes) / sizeof(KillListNote); i++) {
+        if (kill_list_notes[i].ticks_left == 0) {
+            kill_list_notes[i].note = note;
+            kill_list_notes[i].channel = channel;
+            kill_list_notes[i].ticks_left = note_length_ticks;
+            break;
+        }
+    }
+}
+
+void handle_kill_list() {
+    for (byte i = 0; i < sizeof(kill_list_notes) / sizeof(KillListNote); i++) {
+        if (kill_list_notes[i].ticks_left == 1) {
+            MIDI.sendNoteOff(kill_list_notes[i].note, 0, kill_list_notes[i].channel);
+        }
+
+        // Reduce the number of ticks
+        if (kill_list_notes[i].ticks_left > 0) {
+            kill_list_notes[i].ticks_left -= 1;
+        }
+    }
+}
+
+void handle_kill_all() {
+    for (byte i = 0; i < sizeof(kill_list_notes) / sizeof(KillListNote); i++) {
+        MIDI.sendNoteOff(kill_list_notes[i].note, 0, kill_list_notes[i].channel);
+        kill_list_notes[i].ticks_left = 0;
+    }
+}
 
 void note_name(String &note, byte note_number) {
     const String Notes[] = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
