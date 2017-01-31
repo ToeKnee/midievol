@@ -338,8 +338,9 @@ void handleEncoder(byte encoder, byte value) {
                     adjustBPM(value);
                 } else if (encoder == 1) {  // Handle Beat Division Changes
                     adjustBeatDivision(value);
-                }
-                else if (encoder == 4) {  // Handle Sequence Length Changes
+                } else if (encoder == 2) {  // Handle Note Length Changes
+                    adjustNoteLength(value);
+                } else if (encoder == 4) {  // Handle Sequence Length Changes
                     adjustSequenceLength(value);
                 }
             }
@@ -516,7 +517,7 @@ void handleClock() {
         if (internal_clock_source == false) {
             // Only calculate the current bpm once per beat
             // Average pulse length
-            unsigned long sum = 0L;
+            unsigned long sum = 0;
             for (int i = 0 ; i < CPQN ; i++) {
                 if (microseconds_pqn[i] > 0) {
                     sum += microseconds_pqn[i];
@@ -565,6 +566,34 @@ void adjustBeatDivision(byte adjustment) {
     } else if (sequence.beat_division == 4) {
         status_display += "1/16";
     } else if (sequence.beat_division == 5) {
+        status_display += "1/32";
+    }
+
+    ui_dirty = true;
+}
+
+void adjustNoteLength(byte adjustment) {
+    sequence.note_length += adjustment;
+
+    // Handle looping round the values
+    if (sequence.note_length > 127) {
+        sequence.note_length = 5;
+    }
+
+    status_display = "Gate: ";
+    // There are 6 possible beat divisions. Choose one.
+    sequence.note_length = sequence.note_length % 6;
+    if (sequence.note_length == 0) {
+        status_display += "1/1";
+    } else if (sequence.note_length == 1) {
+        status_display += "1/2";
+    } else if (sequence.note_length == 2) {
+        status_display += "1/4";
+    } else if (sequence.note_length == 3) {
+        status_display += "1/8";
+    } else if (sequence.note_length == 4) {
+        status_display += "1/16";
+    } else if (sequence.note_length == 5) {
         status_display += "1/32";
     }
 
