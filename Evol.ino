@@ -640,11 +640,6 @@ void init_kill_list() {
 
 
 void add_to_kill_list(byte note, byte channel, unsigned int note_length_ticks) {
-    KillListNote kill_note {
-        note,
-        channel,
-        note_length_ticks
-    };
     for (byte i = 0; i < sizeof(kill_list_notes) / sizeof(KillListNote); i++) {
         if (kill_list_notes[i].ticks_left == 0) {
             kill_list_notes[i].note = note;
