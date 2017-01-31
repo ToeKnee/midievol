@@ -589,7 +589,7 @@ unsigned long pulse_len_from_bpm(int bpm) {
 }
 
 void play_note() {
-    int current_note = beat % (sequence.length + 1);  // Sequence length is 0 indexed
+    byte current_note = beat % (sequence.length + 1);  // Sequence length is 0 indexed
     unsigned int ticks_left;
     if (sequence.note_length_from_sequence) {
         ticks_left = beat_division_map[sequence.note_length];
