@@ -599,20 +599,22 @@ void play_note() {
 
     // Display the playing note
     display_note = current_note;
-
     // Check for tied notes
     byte i = 1;  // Start at 1, 0 is current_note
-    while (notes[(beat + i) % (sizeof(notes) / sizeof(Note))].note == TIE) {
-        if (sequence.note_length_from_sequence) {
-            ticks_left += beat_division_map[sequence.note_length];
-        } else {
-            ticks_left += beat_division_map[notes[current_note].note_length];
-        }
+    if (current_note != TIE) {
+        while (notes[(beat + i) % (sequence.length + 1)].note == TIE) { // Sequence length is 0 indexed
 
-        i++;
-        if (i == 255) {
-            // Hopefully there aren't 255 TIE's, but you never know.
-            break;
+            if (sequence.note_length_from_sequence) {
+                ticks_left += beat_division_map[sequence.note_length];
+            } else {
+                ticks_left += beat_division_map[notes[current_note].note_length];
+            }
+
+            i++;
+            if (i == 255) {
+                // Hopefully there aren't 255 TIE's, but you never know.
+                break;
+            }
         }
     }
 
