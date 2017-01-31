@@ -377,6 +377,11 @@ void timerIsr() {
 }
 
 void panic() {
+    // Send MIDI SystemReset
+    using namespace midi;
+    MIDI.sendRealTime(SystemReset);
+
+
     // Reset each channel
     for (int i = 0; i < 16; i++) {
         // Reset each note on each channel
@@ -444,24 +449,40 @@ void handleStart() {
         next_clock_pulse = micros() + microseconds_per_pulse;
     }
 
+    // Send MIDI Start
+    using namespace midi;
+    MIDI.sendRealTime(Start);
+
     play_note();
     playing = true;
     ui_dirty = true;
 };
 
 void handleContinue() {
+    // Send MIDI Continue
+    using namespace midi;
+    MIDI.sendRealTime(Continue);
+
     play_note();
     playing = true;
     ui_dirty = true;
 };
 
 void handlePause() {
+    // Send MIDI Stop
+    using namespace midi;
+    MIDI.sendRealTime(Stop);
+
     playing = false;
     ui_dirty = true;
     handle_kill_all();
 };
 
 void handleStop() {
+    // Send MIDI Stop
+    using namespace midi;
+    MIDI.sendRealTime(Stop);
+
     playing = false;
     ui_dirty = true;
     beat = 0;
