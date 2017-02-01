@@ -1,9 +1,9 @@
 
-int bpm_from_pulse_len(unsigned long pulse_len) {
+byte bpm_from_pulse_len(unsigned long pulse_len) {
     return (oneMinuteInMicroseconds / (pulse_len * CPQN)) * (timeSignatureDenominator / 4.0);
 }
 
-unsigned long pulse_len_from_bpm(int bpm) {
+unsigned long pulse_len_from_bpm(byte bpm) {
     return oneMinuteInMicroseconds / (bpm * CPQN);
 }
 
