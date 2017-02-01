@@ -2,7 +2,7 @@ void adjustBPM(byte adjustment) {
     bpm += adjustment;
     microseconds_per_pulse = pulse_len_from_bpm(bpm);
 
-    status_display = "BPM: ";
+    status_display = F("BPM: ");
     status_display += bpm;
 
     ui_dirty = true;
@@ -16,21 +16,21 @@ void adjustBeatDivision(byte adjustment) {
         sequences[sequence_id].beat_division = 5;
     }
 
-    status_display = "Beat: ";
+    status_display = F("Beat: ");
     // There are 6 possible beat divisions. Choose one.
     sequences[sequence_id].beat_division = sequences[sequence_id].beat_division % 6;
     if (sequences[sequence_id].beat_division == 0) {
-        status_display += "1/1";
+        status_display += F("1/1");
     } else if (sequences[sequence_id].beat_division == 1) {
-        status_display += "1/2";
+        status_display += F("1/2");
     } else if (sequences[sequence_id].beat_division == 2) {
-        status_display += "1/4";
+        status_display += F("1/4");
     } else if (sequences[sequence_id].beat_division == 3) {
-        status_display += "1/8";
+        status_display += F("1/8");
     } else if (sequences[sequence_id].beat_division == 4) {
-        status_display += "1/16";
+        status_display += F("1/16");
     } else if (sequences[sequence_id].beat_division == 5) {
-        status_display += "1/32";
+        status_display += F("1/32");
     }
 
     ui_dirty = true;
@@ -44,21 +44,21 @@ void adjustNoteLength(byte adjustment) {
         sequences[sequence_id].note_length = 5;
     }
 
-    status_display = "Gate: ";
+    status_display = F("Gate: ");
     // There are 6 possible beat divisions. Choose one.
     sequences[sequence_id].note_length = sequences[sequence_id].note_length % 6;
     if (sequences[sequence_id].note_length == 0) {
-        status_display += "1/1";
+        status_display += F("1/1");
     } else if (sequences[sequence_id].note_length == 1) {
-        status_display += "1/2";
+        status_display += F("1/2");
     } else if (sequences[sequence_id].note_length == 2) {
-        status_display += "1/4";
+        status_display += F("1/4");
     } else if (sequences[sequence_id].note_length == 3) {
-        status_display += "1/8";
+        status_display += F("1/8");
     } else if (sequences[sequence_id].note_length == 4) {
-        status_display += "1/16";
+        status_display += F("1/16");
     } else if (sequences[sequence_id].note_length == 5) {
-        status_display += "1/32";
+        status_display += F("1/32");
     }
 
     ui_dirty = true;
@@ -67,7 +67,7 @@ void adjustNoteLength(byte adjustment) {
 void adjustSequenceIndex(byte adjustment) {
     sequences[sequence_id].id += adjustment;
 
-    status_display = "";
+    status_display = F("");
     status_display += sequences[sequence_id].id + 1;  // Display off by one.
 
     // TODO: Remove this when save/load is implemented - need big eeprom
@@ -79,7 +79,7 @@ void adjustSequenceIndex(byte adjustment) {
 void adjustSequenceLength(byte adjustment) {
     sequences[sequence_id].length += adjustment;
 
-    status_display = "Steps: ";
+    status_display = F("Steps: ");
     status_display += sequences[sequence_id].length + 1;  // Display off by one.
 
     ui_dirty = true;
@@ -96,7 +96,7 @@ void update_note(byte note, byte value) {
 
     display_note = note;
     note_name(status_display, sequences_notes[sequence_id][display_note].note);
-    status_display += " ";
+    status_display += F(" ");
     status_display += sequences_notes[sequence_id][display_note].velocity;
 
     ui_dirty = true;

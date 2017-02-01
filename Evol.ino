@@ -208,9 +208,9 @@ void setup() {
 
     // Set up the LCD's number of columns and rows:
     lcd.begin(16, 2);
-    lcd.write("  MIDIEVOL v0.1");
+    lcd.print(F("  MIDIEVOL v0.1"));
     lcd.setCursor(0, 1);
-    lcd.write("Initialising...");
+    lcd.print(F("Initialising..."));
 
     // Set up the physical buttons
     pinMode(playPin, INPUT_PULLUP);
@@ -274,10 +274,7 @@ void setup() {
     mode = sequencer;
 
     // Clear UI
-    lcd.setCursor(0, 0);
-    lcd.write("                ");
-    lcd.setCursor(0, 1);
-    lcd.write("                ");
+    lcd.clear();
     // Draw the ui for the first time
     draw_ui();
 }

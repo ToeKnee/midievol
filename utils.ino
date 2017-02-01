@@ -8,20 +8,20 @@ unsigned long pulse_len_from_bpm(int bpm) {
 }
 
 void note_name(String &note, byte note_number) {
-    const String Notes[] = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+    const String Notes[] = { F("C"), F("C#"), F("D"), F("D#"), F("E"), F("F"), F("F#"), F("G"), F("G#"), F("A"), F("A#"), F("B") };
     // Handle special cases first
     if (note_number == REST) {
-        note = "REST";
+        note = F("REST");
     } else if (note_number == TIE) {
-        note = "TIE ";
+        note = F("TIE ");
     } else {
         note = Notes[(note_number % 12)];
         if (note.length() == 1) {
-            note += " ";
+            note += F(" ");
         }
         note += (note_number / 12); // Octave
         if (note.length() == 3) {
-            note += " ";
+            note += F(" ");
         }
     }
 }
