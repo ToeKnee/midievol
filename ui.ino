@@ -1,0 +1,54 @@
+void draw_ui() {
+    ui_dirty = false;
+    // Write the mode
+    lcd.setCursor(0, 0);
+    if (mode == sequencer) {
+        lcd.print("SEQ ");
+        if (sequence_id < 10) {
+            lcd.print("  ");
+        } else if (sequence_id < 100) {
+            lcd.print(" ");
+        }
+        lcd.print(sequence_id + 1);
+    }
+
+    // Write Play State
+    lcd.setCursor(10, 0);
+    if (playing) {
+        lcd.write(byte(2));  // Play button
+    } else {
+        lcd.print(" ");
+    }
+
+    // Display Shift status
+    lcd.setCursor(11, 0);
+    if (shift) {
+        lcd.write(byte(3));
+    } else {
+        lcd.write(" ");
+    }
+
+    // Write the bpm at the top right of the display
+    lcd.setCursor(12, 0);
+    lcd.write(byte(beat_chr));
+    lcd.setCursor(13, 0);
+    if (bpm < 10) {
+        lcd.print("  ");
+    } else if (bpm < 100) {
+        lcd.print(" ");
+    }
+    lcd.print(bpm);
+
+    // Display Status
+    lcd.setCursor(0, 1);
+    while (status_display.length() <= 10) {
+        status_display += " ";
+    }
+    lcd.print(status_display);
+
+    // Display last note edited
+    lcd.setCursor(12, 1);
+    String note_display;
+    note_name(note_display, sequences_notes[sequence_id][display_note].note);
+    lcd.print(note_display);
+}
