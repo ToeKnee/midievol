@@ -28,7 +28,7 @@ void draw_ui() {
     if (shift) {
         lcd.write(byte(3));
     } else {
-        lcd.write(F(" "));
+        lcd.print(F(" "));
     }
 
     // Write the bpm at the top right of the display
