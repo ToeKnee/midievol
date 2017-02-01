@@ -3,21 +3,24 @@ void draw_ui() {
     // Write the mode
     lcd.setCursor(0, 0);
     if (mode == sequencer) {
-        lcd.print("SEQ ");
-        if (sequence_id < 10) {
-            lcd.print("  ");
-        } else if (sequence_id < 100) {
-            lcd.print(" ");
-        }
-        lcd.print(sequence_id + 1);
+        lcd.print(F("SEQ "));
+    } else if (mode == drum) {
+        lcd.print(F("DRM "));
     }
+    if (sequence_id < 10) {
+        lcd.print(F("  "));
+    } else if (sequence_id < 100) {
+        lcd.print(F(" "));
+    }
+    lcd.print(sequence_id + 1);
+
 
     // Write Play State
     lcd.setCursor(10, 0);
     if (playing) {
         lcd.write(byte(2));  // Play button
     } else {
-        lcd.print(" ");
+        lcd.print(F(" "));
     }
 
     // Display Shift status
@@ -25,7 +28,7 @@ void draw_ui() {
     if (shift) {
         lcd.write(byte(3));
     } else {
-        lcd.write(" ");
+        lcd.write(F(" "));
     }
 
     // Write the bpm at the top right of the display
@@ -33,9 +36,9 @@ void draw_ui() {
     lcd.write(byte(beat_chr));
     lcd.setCursor(13, 0);
     if (bpm < 10) {
-        lcd.print("  ");
+        lcd.print(F("  "));
     } else if (bpm < 100) {
-        lcd.print(" ");
+        lcd.print(F(" "));
     }
     lcd.print(bpm);
 
