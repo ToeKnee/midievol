@@ -101,6 +101,16 @@ struct KillListNote {
     byte channel;
     unsigned int ticks_left;
 };
+byte sequence_id = 0;
+struct Sequence {
+    byte id; // Save location - 0 indexed
+    byte channel; // 16 channels
+    byte length; // up to 256  -  0 indexed
+    byte beat_division; // BeatDivision
+    byte note_length; // BeatDivision
+    bool note_length_from_sequence;
+};
+
 typedef enum BeatDivision{
     whole,
     half,
@@ -111,15 +121,6 @@ typedef enum BeatDivision{
 };
 const byte beat_division_map[] = {96, 48, 24, 12, 6, 3};
 
-struct Sequence {
-    byte id;
-    byte channel; // 16 channels
-    Note* sequence;
-    byte length; // up to 256  -  0 indexed
-    byte beat_division; // BeatDivision
-    byte note_length; // BeatDivision
-    bool note_length_from_sequence;
-};
 
 // Clock
 const byte CPQN = 24;  // Midi Clock
@@ -154,8 +155,8 @@ bool internal_clock_source = true;
 // Kill list of playing notes
 KillListNote kill_list_notes[128];
 
-// Dummy sequence stuff
-Note notes[256] {
+Note sequences_notes[24][64] {
+{
     {60, 100, quarter},
     {REST, 100, quarter},
     {60, 100, quarter},
@@ -164,17 +165,39 @@ Note notes[256] {
     {TIE, 100, quarter},
     {30, 100, quarter},
     {90, 120, quarter},
+},
+{
+    {60, 100, quarter},
+    {61, 100, quarter},
+    {62, 100, quarter},
+    {63, 120, quarter},
+    {64, 100, quarter},
+    {65, 100, quarter},
+    {66, 100, quarter},
+    {67, 120, quarter},
+},
+};
+Sequence sequences[24] {
+    {
+        1,
+        1,
+        7,  // 0 indexed
+        quarter,
+        quarter,
+        true,
+    },
+    {
+        1,
+        10,
+        7,  // 0 indexed
+        quarter,
+        quarter,
+        true,
+    },
 };
 
-Sequence sequence = {
-    1,
-    1,
-    notes,
-    7,  // 0 indexed
-    quarter,
-    quarter,
-    true,
-};
+// Address and sizes needed for loading / saving
+int size_of_sequence = sizeof(sequences[0]) + sizeof(sequences_notes[0]);
 
 void setup() {
     // Set up the custom characters
@@ -340,8 +363,14 @@ void handleEncoder(byte encoder, byte value) {
                     adjustBeatDivision(value);
                 } else if (encoder == 2) {  // Handle Note Length Changes
                     adjustNoteLength(value);
-                } else if (encoder == 4) {  // Handle Sequence Length Changes
+                } else if (encoder == 3) {  // Handle Sequence Length Changes
                     adjustSequenceLength(value);
+                }
+                else if (encoder == 4) {  // Handle Load position
+                    adjustSequenceIndex(value);
+                }
+                else if (encoder == 5) {  // Handle Save position
+                    adjustSequenceIndex(value);
                 }
             }
         }
@@ -349,17 +378,17 @@ void handleEncoder(byte encoder, byte value) {
 }
 
 void update_note(byte note, byte value) {
-    notes[note].note += value;
-    if (notes[note].note == 255) { // Looped round 0 backwards
-        notes[note].note = 129;
-    } else if (notes[note].note > 129) {  // 127 Midi notes + 2 special cases
-        notes[note].note = 0;
+    sequences_notes[sequence_id][note].note += value;
+    if (sequences_notes[sequence_id][note].note == 255) { // Looped round 0 backwards
+        sequences_notes[sequence_id][note].note = 129;
+    } else if (sequences_notes[sequence_id][note].note > 129) {  // 127 Midi notes + 2 special cases
+        sequences_notes[sequence_id][note].note = 0;
     }
 
     display_note = note;
-    note_name(status_display, notes[display_note].note);
+    note_name(status_display, sequences_notes[sequence_id][display_note].note);
     status_display += " ";
-    status_display += notes[display_note].velocity;
+    status_display += sequences_notes[sequence_id][display_note].velocity;
 
     ui_dirty = true;
 }
@@ -400,7 +429,13 @@ void draw_ui() {
     // Write the mode
     lcd.setCursor(0, 0);
     if (mode == sequencer) {
-        lcd.print("SEQ");
+        lcd.print("SEQ ");
+        if (sequence_id < 10) {
+            lcd.print("  ");
+        } else if (sequence_id < 100) {
+            lcd.print(" ");
+        }
+        lcd.print(sequence_id + 1);
     }
 
     // Write Play State
@@ -409,6 +444,14 @@ void draw_ui() {
         lcd.write(byte(2));  // Play button
     } else {
         lcd.print(" ");
+    }
+
+    // Display Shift status
+    lcd.setCursor(11, 0);
+    if (shift) {
+        lcd.write(byte(3));
+    } else {
+        lcd.write(" ");
     }
 
     // Write the bpm at the top right of the display
@@ -422,14 +465,6 @@ void draw_ui() {
     }
     lcd.print(bpm);
 
-    // Display Shift status
-    lcd.setCursor(4, 0);
-    if (shift) {
-        lcd.write(byte(3));
-    } else {
-        lcd.write(" ");
-    }
-
     // Display Status
     lcd.setCursor(0, 1);
     while (status_display.length() <= 10) {
@@ -440,7 +475,7 @@ void draw_ui() {
     // Display last note edited
     lcd.setCursor(12, 1);
     String note_display;
-    note_name(note_display, notes[display_note].note);
+    note_name(note_display, sequences_notes[sequence_id][display_note].note);
     lcd.print(note_display);
 }
 
@@ -519,7 +554,7 @@ void handleClock() {
 
     // Handle playing notes at the right time
     pulse_count += 1;
-    if (pulse_count % beat_division_map[sequence.beat_division] == 0) {
+    if (pulse_count % beat_division_map[sequences[sequence_id].beat_division] == 0) {
         beat += 1;  // Increment the sequences beat counter
         play_note();
         pulse_count = 0;
@@ -566,27 +601,27 @@ void adjustBPM(byte adjustment) {
 }
 
 void adjustBeatDivision(byte adjustment) {
-    sequence.beat_division += adjustment;
+    sequences[sequence_id].beat_division += adjustment;
 
     // Handle looping round the values
-    if (sequence.beat_division > 127) {
-        sequence.beat_division = 5;
+    if (sequences[sequence_id].beat_division > 127) {
+        sequences[sequence_id].beat_division = 5;
     }
 
     status_display = "Beat: ";
     // There are 6 possible beat divisions. Choose one.
-    sequence.beat_division = sequence.beat_division % 6;
-    if (sequence.beat_division == 0) {
+    sequences[sequence_id].beat_division = sequences[sequence_id].beat_division % 6;
+    if (sequences[sequence_id].beat_division == 0) {
         status_display += "1/1";
-    } else if (sequence.beat_division == 1) {
+    } else if (sequences[sequence_id].beat_division == 1) {
         status_display += "1/2";
-    } else if (sequence.beat_division == 2) {
+    } else if (sequences[sequence_id].beat_division == 2) {
         status_display += "1/4";
-    } else if (sequence.beat_division == 3) {
+    } else if (sequences[sequence_id].beat_division == 3) {
         status_display += "1/8";
-    } else if (sequence.beat_division == 4) {
+    } else if (sequences[sequence_id].beat_division == 4) {
         status_display += "1/16";
-    } else if (sequence.beat_division == 5) {
+    } else if (sequences[sequence_id].beat_division == 5) {
         status_display += "1/32";
     }
 
@@ -594,27 +629,27 @@ void adjustBeatDivision(byte adjustment) {
 }
 
 void adjustNoteLength(byte adjustment) {
-    sequence.note_length += adjustment;
+    sequences[sequence_id].note_length += adjustment;
 
     // Handle looping round the values
-    if (sequence.note_length > 127) {
-        sequence.note_length = 5;
+    if (sequences[sequence_id].note_length > 127) {
+        sequences[sequence_id].note_length = 5;
     }
 
     status_display = "Gate: ";
     // There are 6 possible beat divisions. Choose one.
-    sequence.note_length = sequence.note_length % 6;
-    if (sequence.note_length == 0) {
+    sequences[sequence_id].note_length = sequences[sequence_id].note_length % 6;
+    if (sequences[sequence_id].note_length == 0) {
         status_display += "1/1";
-    } else if (sequence.note_length == 1) {
+    } else if (sequences[sequence_id].note_length == 1) {
         status_display += "1/2";
-    } else if (sequence.note_length == 2) {
+    } else if (sequences[sequence_id].note_length == 2) {
         status_display += "1/4";
-    } else if (sequence.note_length == 3) {
+    } else if (sequences[sequence_id].note_length == 3) {
         status_display += "1/8";
-    } else if (sequence.note_length == 4) {
+    } else if (sequences[sequence_id].note_length == 4) {
         status_display += "1/16";
-    } else if (sequence.note_length == 5) {
+    } else if (sequences[sequence_id].note_length == 5) {
         status_display += "1/32";
     }
 
@@ -622,12 +657,36 @@ void adjustNoteLength(byte adjustment) {
 }
 
 void adjustSequenceLength(byte adjustment) {
-    sequence.length += adjustment;
+    sequences[sequence_id].length += adjustment;
 
     status_display = "Steps: ";
-    status_display += sequence.length + 1;  // Display off by one.
+    status_display += sequences[sequence_id].length + 1;  // Display off by one.
 
     ui_dirty = true;
+}
+
+void adjustSequenceIndex(byte adjustment) {
+    sequences[sequence_id].id += adjustment;
+
+    status_display = "";
+    status_display += sequences[sequence_id].id + 1;  // Display off by one.
+
+    // TODO: Remove this when save/load is implemented - need big eeprom
+    sequence_id = sequences[sequence_id].id;
+
+    ui_dirty = true;
+}
+
+int getSequenceAddress(byte id) {
+    return size_of_sequence * id;
+}
+
+void loadSequence() {
+
+}
+
+void saveSequence() {
+
 }
 
 int bpm_from_pulse_len(unsigned long pulse_len) {
@@ -639,12 +698,12 @@ unsigned long pulse_len_from_bpm(int bpm) {
 }
 
 void play_note() {
-    byte current_note = beat % (sequence.length + 1);  // Sequence length is 0 indexed
+    byte current_note = beat % (sequences[sequence_id].length + 1);  // Sequence length is 0 indexed
     unsigned int ticks_left;
-    if (sequence.note_length_from_sequence) {
-        ticks_left = beat_division_map[sequence.note_length];
+    if (sequences[sequence_id].note_length_from_sequence) {
+        ticks_left = beat_division_map[sequences[sequence_id].note_length];
     } else {
-        ticks_left = beat_division_map[notes[current_note].note_length];
+        ticks_left = beat_division_map[sequences_notes[sequence_id][current_note].note_length];
     }
 
     // Display the playing note
@@ -652,12 +711,12 @@ void play_note() {
     // Check for tied notes
     byte i = 1;  // Start at 1, 0 is current_note
     if (current_note != TIE) {
-        while (notes[(beat + i) % (sequence.length + 1)].note == TIE) { // Sequence length is 0 indexed
+        while (sequences_notes[sequence_id][(beat + i) % (sequences[sequence_id].length + 1)].note == TIE) { // Sequence length is 0 indexed
 
-            if (sequence.note_length_from_sequence) {
-                ticks_left += beat_division_map[sequence.note_length];
+            if (sequences[sequence_id].note_length_from_sequence) {
+                ticks_left += beat_division_map[sequences[sequence_id].note_length];
             } else {
-                ticks_left += beat_division_map[notes[current_note].note_length];
+                ticks_left += beat_division_map[sequences_notes[sequence_id][current_note].note_length];
             }
 
             i++;
@@ -669,9 +728,9 @@ void play_note() {
     }
 
     // Play the note
-    if (notes[current_note].note != TIE && notes[current_note].note != REST) {
-        MIDI.sendNoteOn(notes[current_note].note + transpose, notes[current_note].velocity, sequence.channel);
-        add_to_kill_list(notes[current_note].note + transpose, sequence.channel, ticks_left);
+    if (sequences_notes[sequence_id][current_note].note != TIE && sequences_notes[sequence_id][current_note].note != REST) {
+        MIDI.sendNoteOn(sequences_notes[sequence_id][current_note].note + transpose, sequences_notes[sequence_id][current_note].velocity, sequences[sequence_id].channel);
+        add_to_kill_list(sequences_notes[sequence_id][current_note].note + transpose, sequences[sequence_id].channel, ticks_left);
     }
 };
 
