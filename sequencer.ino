@@ -70,9 +70,6 @@ void adjustSequenceIndex(byte adjustment) {
     status_display = F("");
     status_display += sequences[sequence_id].id + 1;  // Display off by one.
 
-    // TODO: Remove this when save/load is implemented - need big eeprom
-    sequence_id = sequences[sequence_id].id;
-
     ui_dirty = true;
 }
 
