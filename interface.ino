@@ -39,6 +39,54 @@ void handleEncoder(byte encoder, byte value) {
                     adjustSequenceIndex(value);
                 }
             }
+        } else if (mode == drum) { // Drum mode
+            // 16 random tracks
+            for (int x = 0; x < 4; x++){
+                euclidean_build(x, random(64), 64, random(3), 35 + x);
+            }
+        }
+    }
+}
+
+void handleButtons() {
+    if (debouncer_play.update()) {
+        if (debouncer_play.fell()) {
+            // Shift - change mode
+            if (shift) {
+                if (mode == sequencer) {
+                    mode = drum;
+                    sequence_id = 1;
+                } else if (mode == drum) {
+                    mode = song;
+                } else {
+                    mode = sequencer;
+                    sequence_id = 0;
+                }
+            } else {
+                if (playing) {
+                    handlePause();
+                } else {
+                    handleStart();
+                }
+            }
+            ui_dirty = true;
+        }
+    }
+
+    if (debouncer_stop.update()) {
+        if (debouncer_stop.fell()) {
+            handleStop();
+            beat = 0;
+        }
+    }
+
+    if (debouncer_shift.update()) {
+        if (debouncer_shift.fell()) {
+            shift = true;
+            ui_dirty = true;
+        } else if (debouncer_shift.rose()) {
+            shift = false;
+            ui_dirty = true;
         }
     }
 }

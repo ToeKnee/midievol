@@ -297,31 +297,7 @@ void loop() {
     }
 
     // Check physical buttons
-    if (debouncer_play.update()) {
-        if (debouncer_play.fell()) {
-            if (playing) {
-                handlePause();
-            } else {
-                handleStart();
-            }
-            ui_dirty = true;
-        }
-    }
-    if (debouncer_stop.update()) {
-        if (debouncer_stop.fell()) {
-            handleStop();
-            beat = 0;
-        }
-    }
-    if (debouncer_shift.update()) {
-        if (debouncer_shift.fell()) {
-            shift = true;
-            ui_dirty = true;
-        } else if (debouncer_shift.rose()) {
-            shift = false;
-            ui_dirty = true;
-        }
-    }
+    handleButtons();
 
     // Check the 4 x 4 matrix
     handleEncoder(0, encoder_0->getValue());

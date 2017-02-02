@@ -45,7 +45,11 @@ void handleClock() {
     pulse_count += 1;
     if (pulse_count % beat_division_map[sequences[sequence_id].beat_division] == 0) {
         beat += 1;  // Increment the sequences beat counter
-        play_note();
+        if (mode == sequencer) {
+            play_note();
+        } else if (mode == drum) {
+            play_drums();
+        }
         pulse_count = 0;
         ui_dirty = true;
     }
@@ -165,6 +169,23 @@ void play_note() {
     if (sequences_notes[sequence_id][current_note].note != TIE && sequences_notes[sequence_id][current_note].note != REST) {
         MIDI.sendNoteOn(sequences_notes[sequence_id][current_note].note + transpose, sequences_notes[sequence_id][current_note].velocity, sequences[sequence_id].channel);
         add_to_kill_list(sequences_notes[sequence_id][current_note].note + transpose, sequences[sequence_id].channel, ticks_left);
+    }
+};
+
+void play_drums() {
+    unsigned int ticks_left = beat_division_map[drum_sequences[0].beat_division];
+    for (int i=0; i < 16; i++) {
+        byte current_note = beat % (drum_tracks[i].length + 1);  // Sequence length is 0 indexed
+
+        // Play the drum
+        lcd.setCursor(i, 1);
+        if (calculated_drum_tracks[i][current_note]) {
+            lcd.print(F("x"));
+            MIDI.sendNoteOn(drum_tracks[i].note, random(80, 127),  drum_sequences[0].channel);
+            add_to_kill_list(drum_tracks[i].note, drum_sequences[0].channel, ticks_left);
+        } else {
+            lcd.print(F(" "));
+        }
     }
 };
 

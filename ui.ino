@@ -42,16 +42,18 @@ void draw_ui() {
     }
     lcd.print(bpm);
 
-    // Display Status
-    lcd.setCursor(0, 1);
-    while (status_display.length() <= 10) {
-        status_display += " ";
-    }
-    lcd.print(status_display);
+    if (mode == sequencer) {
+        // Display Status
+        lcd.setCursor(0, 1);
+        while (status_display.length() <= 10) {
+            status_display += " ";
+        }
+        lcd.print(status_display);
 
-    // Display last note edited
-    lcd.setCursor(12, 1);
-    String note_display;
-    note_name(note_display, sequences_notes[sequence_id][display_note].note);
-    lcd.print(note_display);
+        // Display last note edited
+        lcd.setCursor(12, 1);
+        String note_display;
+        note_name(note_display, sequences_notes[sequence_id][display_note].note);
+        lcd.print(note_display);
+    }
 }
