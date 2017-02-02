@@ -105,7 +105,7 @@ byte sequence_id = 0;
 struct Sequence {
     byte id; // Save location - 0 indexed
     byte channel; // 16 channels
-    byte length; // up to 256  -  0 indexed
+    byte length; // up to 64
     byte beat_division; // BeatDivision
     byte note_length; // BeatDivision
     bool note_length_from_sequence;
@@ -155,7 +155,7 @@ bool internal_clock_source = true;
 // Kill list of playing notes
 KillListNote kill_list_notes[128];
 
-Note sequences_notes[24][64] {
+Note sequences_notes[16][64] {
 {
     {60, 100, quarter},
     {REST, 100, quarter},
@@ -177,7 +177,7 @@ Note sequences_notes[24][64] {
     {67, 120, quarter},
 },
 };
-Sequence sequences[24] {
+Sequence sequences[16] {
     {
         1,
         1,
