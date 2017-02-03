@@ -35,6 +35,8 @@ void euclidean_build(byte track, byte beats, byte length, byte rotation, byte no
 
     if (length > 64) {
         length = 64;
+    } else if (length < 1) {
+        length = 1;
     }
 
     if (beats > length) {
