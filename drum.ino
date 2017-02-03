@@ -45,7 +45,6 @@ void euclidean_build(byte track, byte beats, byte length, byte rotation, byte no
 
     int divisor = length - beats;
     sequences[1].length = length - 1;
-    //pulses = beats;
     remainder[0] = beats;
     step_status = 0;
     int level = 0;
