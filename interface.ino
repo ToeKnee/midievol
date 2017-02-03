@@ -31,18 +31,26 @@ void handleEncoder(byte encoder, byte value) {
                     adjustNoteLength(value);
                 } else if (encoder == 3) {  // Handle Sequence Length Changes
                     adjustSequenceLength(value);
-                }
-                else if (encoder == 4) {  // Handle Load position
+                } else if (encoder == 4) {  // Handle Load position
                     adjustSequenceIndex(value);
-                }
-                else if (encoder == 5) {  // Handle Save position
+                } else if (encoder == 5) {  // Handle Save position
                     adjustSequenceIndex(value);
                 }
             }
         } else if (mode == drum) { // Drum mode
-            // 16 random tracks
-            for (int x = 0; x < 4; x++){
-                euclidean_build(x, random(64), 64, random(3), 35 + x);
+            if (!shift) {
+                /* For the sixteen encoders, handle setting length,
+                   beats, rotation, velocity humanisation and note.
+                */
+
+            } else {
+                if (encoder == 0) {  // Handle BPM changes
+                    adjustBPM(value);
+                } else if (encoder == 1) {  // Handle Beat Division Changes
+                    adjustBeatDivision(value);  // TODO: Drums should have own beat division
+                } else if (encoder == 2) {  // Handle Note Length Changes
+                    randomDrumPattern();
+                }
             }
         }
     }
@@ -55,7 +63,7 @@ void handleButtons() {
             if (shift) {
                 if (mode == sequencer) {
                     mode = drum;
-                    sequence_id = 1;
+                    sequence_id = 0;
                 } else if (mode == drum) {
                     mode = song;
                 } else {

@@ -105,3 +105,17 @@ void build_string (byte track, int level)  {
         }
     }
 }
+
+
+void randomDrumPattern() {
+    // 4-16 random tracks
+    byte tracks = random(4, 16);
+    for (int x = 0; x < tracks; x++){
+        int steps = random(64);
+        euclidean_build(x, random(steps / 3), steps, random(steps), 35 + x);
+    }
+    // Empty out remaining tracks
+    for (int i=0; i < 16 - tracks; i++) {
+        euclidean_build(tracks + i, 0, 1, random(3), 35 + i);
+    }
+}
