@@ -17,7 +17,7 @@ DrumSequence drum_sequences[16] {
     {
         0,
         10,
-        quarter,
+        sixteenth,
     }
 };
 
