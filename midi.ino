@@ -44,13 +44,14 @@ void handleClock() {
     // Handle playing notes at the right time
     pulse_count += 1;
     if (pulse_count % beat_division_map[sequences[sequence_id].beat_division] == 0) {
-        beat += 1;  // Increment the sequences beat counter
         if (mode == sequencer) {
             play_note();
         } else if (mode == drum) {
             play_drums();
         }
         pulse_count = 0;
+
+        beat += 1;  // Increment the sequences beat counter
         ui_dirty = true;
     }
 
@@ -92,7 +93,6 @@ void handleStart() {
     using namespace midi;
     MIDI.sendRealTime(Start);
 
-    play_note();
     playing = true;
     ui_dirty = true;
 };
@@ -102,7 +102,6 @@ void handleContinue() {
     using namespace midi;
     MIDI.sendRealTime(Continue);
 
-    play_note();
     playing = true;
     ui_dirty = true;
 };
@@ -175,13 +174,12 @@ void play_note() {
 void play_drums() {
     unsigned int ticks_left = beat_division_map[drum_sequences[0].beat_division];
     for (int i=0; i < 16; i++) {
-        byte current_note = beat % (drum_tracks[i].length + 1);  // Sequence length is 0 indexed
-
+        byte current_note = beat % (drum_tracks[i].length);  // Sequence length is 0 indexed
         // Play the drum
         lcd.setCursor(i, 1);
         if (calculated_drum_tracks[i][current_note]) {
             lcd.print(F("x"));
-            MIDI.sendNoteOn(drum_tracks[i].note, random(80, 127),  drum_sequences[0].channel);
+            MIDI.sendNoteOn(drum_tracks[i].note, random(100, 127),  drum_sequences[0].channel);
             add_to_kill_list(drum_tracks[i].note, drum_sequences[0].channel, ticks_left);
         } else {
             lcd.print(F(" "));
