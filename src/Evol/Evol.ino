@@ -87,6 +87,7 @@ byte shift_char[8] = {
     0b01110,
     0b00000
 };
+unsigned long status_timeout = micros();
 
 const byte REST = 128;
 const byte TIE = 129;
@@ -261,6 +262,9 @@ void setup() {
     // Set up Serial for debugging
     Serial.begin(115200);
 
+    // Set up the drums
+    init_drums();
+
     // Set up the kill list
     init_kill_list();
 
@@ -310,6 +314,16 @@ void loop() {
     handleEncoder(6, encoder_6->getValue());
     handleEncoder(7, encoder_7->getValue());
 
+    // And the buttons
+    handleEncoderButton(0, encoder_0->getButton());
+    handleEncoderButton(1, encoder_1->getButton());
+    handleEncoderButton(2, encoder_2->getButton());
+    handleEncoderButton(3, encoder_3->getButton());
+
+    handleEncoderButton(4, encoder_4->getButton());
+    handleEncoderButton(5, encoder_5->getButton());
+    handleEncoderButton(6, encoder_6->getButton());
+    handleEncoderButton(7, encoder_7->getButton());
 
     // Redraw the UI if necessary
     if (ui_dirty) {

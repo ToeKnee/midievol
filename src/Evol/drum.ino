@@ -26,6 +26,14 @@ bool drum_track[64];
 byte remainder[64];
 byte count[64];
 byte calculated_drum_tracks[16][64];
+
+typedef enum DrumTrackEditMode {
+    BEATS,
+    ROTATION,
+    NOTE
+};
+DrumTrackEditMode drum_track_edit_mode[16];
+
 void euclidean_build(byte track, byte beats, byte length, byte rotation, byte note)  {
     // Set the track details
     drum_tracks[track].beats = beats;
@@ -107,6 +115,13 @@ void build_string (byte track, int level)  {
 }
 
 
+void init_drums() {
+    for (int x = 0; x < 16; x++){
+        euclidean_build(x, 0, 4, 0, 35 + x);
+        drum_track_edit_mode[x] = BEATS;
+    }
+}
+
 void randomDrumPattern() {
     // 4-16 random tracks
     byte tracks = random(4, 16);
@@ -118,4 +133,87 @@ void randomDrumPattern() {
     for (int i=0; i < 16 - tracks; i++) {
         euclidean_build(tracks + i, 0, 1, random(3), 35 + i);
     }
+}
+
+
+void update_drumtrack(byte encoder, byte value) {
+    if (drum_track_edit_mode[encoder] == BEATS) {
+        // Update beats/length
+        drum_tracks[encoder].beats += value;
+        if (drum_tracks[encoder].beats > 127) { // Beats Looping << backwards
+            drum_tracks[encoder].length -= 1;
+            if (drum_tracks[encoder].length > 127) { // Length Looping << backwards
+                drum_tracks[encoder].length = 64;
+            }
+            drum_tracks[encoder].beats = drum_tracks[encoder].length;
+        } else if (drum_tracks[encoder].beats > drum_tracks[encoder].length) {
+            drum_tracks[encoder].length += 1;
+            drum_tracks[encoder].beats = 0;
+        }
+
+        if (drum_tracks[encoder].length > 127) { // Length Looping << backwards
+            drum_tracks[encoder].beats = 0;
+            drum_tracks[encoder].length = 1;
+        } else if (drum_tracks[encoder].length > 64) { // Length Looping >> forwards
+            drum_tracks[encoder].beats = 0;
+            drum_tracks[encoder].length = 1;
+        }
+    } else if (drum_track_edit_mode[encoder] == ROTATION) {
+        drum_tracks[encoder].rotation += value;
+        if (drum_tracks[encoder].rotation > 127) { // Looping << backwards
+            drum_tracks[encoder].rotation = 64;
+        } else if (drum_tracks[encoder].length > 64) { // Looping >> forwards
+            drum_tracks[encoder].rotation = 0;
+        }
+    } else if (drum_track_edit_mode[encoder] == NOTE) {
+        drum_tracks[encoder].note += value;
+        if (drum_tracks[encoder].note > 200) { // Looping << backwards
+            drum_tracks[encoder].note = 129;  // 127 + 2 special
+        } else if (drum_tracks[encoder].length > 129) { // Looping >> forwards
+            drum_tracks[encoder].note = 0;
+        }
+    }
+    // Build the drum pattern
+    euclidean_build(
+                    encoder,
+                    drum_tracks[encoder].beats,
+                    drum_tracks[encoder].length,
+                    drum_tracks[encoder].rotation,
+                    drum_tracks[encoder].note
+                    );
+
+    // Update status display
+    // Beats
+    status_display = F("");
+    if (drum_tracks[encoder].beats < 10) {
+        status_display += F(" ");
+    }
+    status_display += drum_tracks[encoder].beats;
+    status_display += F("/");
+    // Length
+    if (drum_tracks[encoder].length < 10) {
+        status_display += F(" ");
+    }
+    status_display += drum_tracks[encoder].length;
+
+    status_display += F(" ");
+    // Rotation
+    if (drum_tracks[encoder].rotation < 100) {
+        status_display += F("  ");
+    } else if (drum_tracks[encoder].rotation < 10) {
+        status_display += F(" ");
+    }
+    status_display += drum_tracks[encoder].rotation;
+
+    status_display += F(" ");
+    // Note
+    if (drum_tracks[encoder].note < 100) {
+        status_display += F("  ");
+    } else if (drum_tracks[encoder].note < 10) {
+        status_display += F(" ");
+    }
+    status_display += drum_tracks[encoder].note;
+
+    status_timeout = micros() + 2000000;
+    ui_dirty = true;
 }

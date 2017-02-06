@@ -42,7 +42,7 @@ void handleEncoder(byte encoder, byte value) {
                 /* For the sixteen encoders, handle setting length,
                    beats, rotation, velocity humanisation and note.
                 */
-
+                update_drumtrack(encoder, value);
             } else {
                 if (encoder == 0) {  // Handle BPM changes
                     adjustBPM(value);
@@ -50,6 +50,27 @@ void handleEncoder(byte encoder, byte value) {
                     adjustBeatDivision(value);  // TODO: Drums should have own beat division
                 } else if (encoder == 2) {  // Handle Note Length Changes
                     randomDrumPattern();
+                }
+            }
+        }
+    }
+}
+
+
+void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
+    if (button != ClickEncoder::Open) {
+        Serial.print(encoder);
+        Serial.print("  " );
+        Serial.println(button);
+        if (mode == drum) {
+            if (button == ClickEncoder::Clicked) {
+                // Cycle the mode
+                if (drum_track_edit_mode[encoder] == BEATS) {
+                    drum_track_edit_mode[encoder] = ROTATION;
+                } else if (drum_track_edit_mode[encoder] == ROTATION) {
+                    drum_track_edit_mode[encoder] = NOTE;
+                } else if (drum_track_edit_mode[encoder] == NOTE) {
+                    drum_track_edit_mode[encoder] = BEATS;
                 }
             }
         }

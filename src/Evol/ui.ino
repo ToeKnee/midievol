@@ -55,5 +55,14 @@ void draw_ui() {
         String note_display;
         note_name(note_display, sequences_notes[sequence_id][display_note].note);
         lcd.print(note_display);
+    } else if (mode == drum) {
+        // Display Status
+        if (status_timeout > micros()) {
+            lcd.setCursor(0, 1);
+            while (status_display.length() <= 16) {
+                status_display += " ";
+            }
+            lcd.print(status_display);
+        }
     }
 }
