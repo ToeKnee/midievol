@@ -1,0 +1,3 @@
+MidiEvol is primarly developed by Anthony Batchelor
+<tony@ynottony.net>. The Bjorklund generation code was adapted from
+Stimresp's Bjorklund sequencer project - https://stimresp.wordpress.com/2014/10/18/bjorklund-the-algorithm-in-c/.
