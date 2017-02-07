@@ -32,11 +32,11 @@ void panic() {
     }
 }
 
+
 void handleClock() {
     // Calculate BPM from 24ppqn
     unsigned long now = micros();
     unsigned long pulse_len;
-    int new_bpm;
 
     microseconds_pqn[pulse_count % CPQN] = now - last_clock_pulse;
     last_clock_pulse = now;
@@ -55,11 +55,12 @@ void handleClock() {
         ui_dirty = true;
     }
 
+
     // Handle the kill list
     handle_kill_list();
 
     // Handle the beating clock
-    if (pulse_count == CPQN) {
+    if (pulse_count == (CPQN - 1)) {
         beat_chr = !beat_chr; // Swap the beat character
         ui_dirty = true;
 
@@ -67,6 +68,7 @@ void handleClock() {
         if (internal_clock_source == false) {
             // Only calculate the current bpm once per beat
             // Average pulse length
+            int new_bpm;
             unsigned long sum = 0;
             for (int i = 0 ; i < CPQN ; i++) {
                 if (microseconds_pqn[i] > 0) {
