@@ -33,6 +33,7 @@ Bounce debouncer_shift = Bounce();
 const byte stepsPerNotch = 4;
 ClickEncoder *encoder_0, *encoder_1, *encoder_2, *encoder_3;
 ClickEncoder *encoder_4, *encoder_5, *encoder_6, *encoder_7;
+ClickEncoder *encoder_8, *encoder_9, *encoder_10, *encoder_11;
 
 // Create the Midi interface
 struct MIDISettings : public midi::DefaultSettings {
@@ -237,6 +238,15 @@ void setup() {
     encoder_7 = new ClickEncoder(43, 44, 45, stepsPerNotch);
     encoder_7->setAccelerationEnabled(true);
 
+    encoder_8 = new ClickEncoder(46, 47, 48, stepsPerNotch);
+    encoder_8->setAccelerationEnabled(true);
+    encoder_9 = new ClickEncoder(49, 50, 51, stepsPerNotch);
+    encoder_9->setAccelerationEnabled(true);
+    encoder_10 = new ClickEncoder(52, 53, A15, stepsPerNotch);
+    encoder_10->setAccelerationEnabled(true);
+    encoder_11 = new ClickEncoder(A14, A13, A12, stepsPerNotch);
+    encoder_11->setAccelerationEnabled(true);
+
     // Set up encoder timers
     Timer1.initialize(1000);
     Timer1.attachInterrupt(timerIsr);
@@ -314,6 +324,11 @@ void loop() {
     handleEncoder(6, encoder_6->getValue());
     handleEncoder(7, encoder_7->getValue());
 
+    handleEncoder(8, encoder_8->getValue());
+    handleEncoder(9, encoder_9->getValue());
+    handleEncoder(10, encoder_10->getValue());
+    handleEncoder(11, encoder_11->getValue());
+
     // And the buttons
     handleEncoderButton(0, encoder_0->getButton());
     handleEncoderButton(1, encoder_1->getButton());
@@ -324,6 +339,11 @@ void loop() {
     handleEncoderButton(5, encoder_5->getButton());
     handleEncoderButton(6, encoder_6->getButton());
     handleEncoderButton(7, encoder_7->getButton());
+
+    handleEncoderButton(8, encoder_8->getButton());
+    handleEncoderButton(9, encoder_9->getButton());
+    handleEncoderButton(10, encoder_10->getButton());
+    handleEncoderButton(11, encoder_11->getButton());
 
     // Redraw the UI if necessary
     if (ui_dirty) {

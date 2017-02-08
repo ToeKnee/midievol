@@ -8,6 +8,11 @@ void timerIsr() {
     encoder_5->service();
     encoder_6->service();
     encoder_7->service();
+
+    encoder_8->service();
+    encoder_9->service();
+    encoder_10->service();
+    encoder_11->service();
 }
 
 void handleEncoder(byte encoder, byte value) {
