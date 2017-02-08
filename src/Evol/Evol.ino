@@ -157,46 +157,9 @@ bool internal_clock_source = true;
 // Kill list of playing notes
 KillListNote kill_list_notes[128];
 
-Note sequences_notes[16][64] {
-{
-    {60, 100, quarter},
-    {REST, 100, quarter},
-    {60, 100, quarter},
-    {TIE, 120, quarter},
-    {TIE, 100, quarter},
-    {TIE, 100, quarter},
-    {30, 100, quarter},
-    {90, 120, quarter},
-},
-{
-    {60, 100, quarter},
-    {61, 100, quarter},
-    {62, 100, quarter},
-    {63, 120, quarter},
-    {64, 100, quarter},
-    {65, 100, quarter},
-    {66, 100, quarter},
-    {67, 120, quarter},
-},
-};
-Sequence sequences[16] {
-    {
-        1,
-        1,
-        7,  // 0 indexed
-        quarter,
-        quarter,
-        true,
-    },
-    {
-        1,
-        10,
-        7,  // 0 indexed
-        quarter,
-        quarter,
-        true,
-    },
-};
+// Sequence and Note data
+Sequence sequences[16];
+Note sequences_notes[16][64];
 
 // Address and sizes needed for loading / saving
 int size_of_sequence = sizeof(sequences[0]) + sizeof(sequences_notes[0]);
@@ -272,6 +235,8 @@ void setup() {
     // Set up Serial for debugging
     Serial.begin(115200);
 
+    // Set up the sequencer
+    init_sequencer();
     // Set up the drums
     init_drums();
 

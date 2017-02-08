@@ -1,3 +1,20 @@
+ void init_sequencer() {
+    for (int i = 0; i < 16; i++){
+        sequences[i].id = i;
+        sequences[i].channel = i + 1;
+        sequences[i].length = 11;
+        sequences[i].beat_division = quarter;
+        sequences[i].note_length = quarter;
+        sequences[i].note_length_from_sequence = true;
+
+        for (int j = 0; j < 64; j++){
+            sequences_notes[i][j].note = random(129);
+            sequences_notes[i][j].velocity = random(100, 127);
+            sequences_notes[i][j].note_length = quarter;
+        }
+    }
+}
+
 void adjustBPM(byte adjustment) {
     bpm += adjustment;
     microseconds_per_pulse = pulse_len_from_bpm(bpm);
