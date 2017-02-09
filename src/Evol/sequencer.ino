@@ -13,6 +13,9 @@
             sequences_notes[i][j].note_length = quarter;
         }
     }
+
+    // Load sequence 1
+    loadSequence(true);
 }
 
 void adjustBPM(byte adjustment) {
@@ -118,14 +121,80 @@ void update_note(byte note, byte value) {
 
 
 
-int getSequenceAddress(byte id) {
+unsigned int getSequenceAddress(byte id) {
     return size_of_sequence * id;
 }
 
-void loadSequence() {
+void loadSequence(bool quiet) {
+    if (!quiet) {
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print(F("Loading"));
+        lcd.setCursor(0, 1);
+        lcd.print(F("Sequence "));
+        lcd.print(sequences[sequence_id].id + 1);
+    }
+    // TODO: Optimisation: Use sequential reads
+    unsigned int address = getSequenceAddress(sequences[sequence_id].id);
+    int offset = 0;
 
+    // Sequence
+    sequences[sequence_id].channel = myEEPROM.read(address + offset);
+    offset += 1;
+    sequences[sequence_id].length = myEEPROM.read(address + offset);
+    offset += 1;
+    sequences[sequence_id].beat_division = myEEPROM.read(address + offset);
+    offset += 1;
+    sequences[sequence_id].note_length = myEEPROM.read(address + offset);
+    offset += 1;
+    sequences[sequence_id].note_length_from_sequence = myEEPROM.read(address + offset);
+    offset += 1;
+
+    // Sequence Notes
+    for (byte i = 0; i < 64; i++) {
+        sequences_notes[sequence_id][i].note = myEEPROM.read(address + offset);
+        offset += 1;
+        sequences_notes[sequence_id][i].velocity = myEEPROM.read(address + offset);
+        offset += 1;
+        sequences_notes[sequence_id][i].note_length = myEEPROM.read(address + offset);
+        offset += 1;
+    }
+    ui_dirty = true;
 }
 
 void saveSequence() {
+    // TODO: Optimisation: Read before write
+    // TODO: Optimisation: Use sequential writes
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Saving"));
+    lcd.setCursor(0, 1);
+    lcd.print(F("Sequence "));
+    lcd.print(sequences[sequence_id].id  + 1);
+    unsigned int address = getSequenceAddress(sequences[sequence_id].id);
+    int offset = 0;
 
+    // Sequence
+    myEEPROM.write(address + offset, sequences[sequence_id].channel);
+    offset += 1;
+    myEEPROM.write(address + offset, sequences[sequence_id].length);
+    offset += 1;
+    myEEPROM.write(address + offset, sequences[sequence_id].beat_division);
+    offset += 1;
+    myEEPROM.write(address + offset, sequences[sequence_id].note_length);
+    offset += 1;
+    myEEPROM.write(address + offset, sequences[sequence_id].note_length_from_sequence);
+    offset += 1;
+
+    // Sequence Notes
+    for (byte i = 0; i < 64; i++) {
+        myEEPROM.write(address + offset, sequences_notes[sequence_id][i].note);
+        offset += 1;
+        myEEPROM.write(address + offset, sequences_notes[sequence_id][i].velocity);
+        offset += 1;
+        myEEPROM.write(address + offset, sequences_notes[sequence_id][i].note_length);
+        offset += 1;
+    }
+
+    ui_dirty = true;
 }

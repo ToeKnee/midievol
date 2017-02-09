@@ -64,10 +64,15 @@ void handleEncoder(byte encoder, byte value) {
 
 void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
     if (button != ClickEncoder::Open) {
-        Serial.print(encoder);
-        Serial.print("  " );
-        Serial.println(button);
-        if (mode == drum) {
+        if (mode == sequencer) {
+            if (button == ClickEncoder::Clicked) {
+                if (encoder == 4) {
+                    loadSequence(false);
+                } else if (encoder == 5) {
+                    saveSequence();
+                }
+            }
+        } else if (mode == drum) {
             if (button == ClickEncoder::Clicked) {
                 // Cycle the mode
                 if (drum_track_edit_mode[encoder] == BEATS) {

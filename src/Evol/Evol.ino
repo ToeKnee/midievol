@@ -13,13 +13,18 @@
 // include the library code:
 #include <Bounce2.h>
 #include <ClickEncoder.h>
+#include <extEEPROM.h>
 #include <LiquidCrystal.h>
 #include <MIDI.h>
 #include <TimerOne.h>
+#include <Wire.h>
 
 // Initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(12, 11, 7, 8, 9, 10);
 String status_display; // Please keep <= 10 chars
+
+// Eeprom
+extEEPROM myEEPROM(kbits_1024, 1, 128);
 
 // Physical buttons
 const byte playPin = 6;
@@ -162,7 +167,7 @@ Sequence sequences[16];
 Note sequences_notes[16][64];
 
 // Address and sizes needed for loading / saving
-int size_of_sequence = sizeof(sequences[0]) + sizeof(sequences_notes[0]);
+const int size_of_sequence = sizeof(sequences[0]) + sizeof(sequences_notes[0]);
 
 void setup() {
     // Set up the custom characters
@@ -234,6 +239,13 @@ void setup() {
     Serial1.begin(31250);
     // Set up Serial for debugging
     Serial.begin(115200);
+
+    // Set up Eeprom
+    byte i2cStat = myEEPROM.begin(twiClock400kHz); //  TODO 1Mhz, needs library update
+                                                   //  https://www.arduino.cc/en/Reference/WireSetClock
+    if ( i2cStat != 0 ) {
+        // There was a problem
+    }
 
     // Set up the sequencer
     init_sequencer();
