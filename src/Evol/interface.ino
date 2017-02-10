@@ -55,6 +55,10 @@ void handleEncoder(byte encoder, byte value) {
                     adjustBeatDivision(value);  // TODO: Drums should have own beat division
                 } else if (encoder == 2) {  // Handle Note Length Changes
                     randomDrumPattern();
+                } else if (encoder == 4) {  // Handle Load position
+                    adjustDrumSequenceIndex(value);
+                } else if (encoder == 5) {  // Handle Save position
+                    adjustDrumSequenceIndex(value);
                 }
             }
         }
@@ -66,21 +70,31 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
     if (button != ClickEncoder::Open) {
         if (mode == sequencer) {
             if (button == ClickEncoder::Clicked) {
-                if (encoder == 4) {
-                    loadSequence(false);
-                } else if (encoder == 5) {
-                    saveSequence();
+                if (shift) {
+                    if (encoder == 4) {
+                        loadSequence(false);
+                    } else if (encoder == 5) {
+                        saveSequence();
+                    }
                 }
             }
         } else if (mode == drum) {
             if (button == ClickEncoder::Clicked) {
-                // Cycle the mode
-                if (drum_track_edit_mode[encoder] == BEATS) {
-                    drum_track_edit_mode[encoder] = ROTATION;
-                } else if (drum_track_edit_mode[encoder] == ROTATION) {
-                    drum_track_edit_mode[encoder] = NOTE;
-                } else if (drum_track_edit_mode[encoder] == NOTE) {
-                    drum_track_edit_mode[encoder] = BEATS;
+                if (shift) {
+                    if (encoder == 4) {
+                        loadDrumSequence(false);
+                    } else if (encoder == 5) {
+                        saveDrumSequence();
+                    }
+                } else {
+                    // Cycle the mode
+                    if (drum_track_edit_mode[encoder] == BEATS) {
+                        drum_track_edit_mode[encoder] = ROTATION;
+                    } else if (drum_track_edit_mode[encoder] == ROTATION) {
+                        drum_track_edit_mode[encoder] = NOTE;
+                    } else if (drum_track_edit_mode[encoder] == NOTE) {
+                        drum_track_edit_mode[encoder] = BEATS;
+                    }
                 }
             }
         }

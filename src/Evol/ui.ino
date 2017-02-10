@@ -65,4 +65,9 @@ void draw_ui() {
             lcd.print(status_display);
         }
     }
+
+    if (cursor_display) {
+        lcd.setCursor(cursor_x, cursor_y);
+        lcd.cursor();
+    }
 }

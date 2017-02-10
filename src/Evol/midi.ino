@@ -173,15 +173,15 @@ void play_note() {
 };
 
 void play_drums() {
-    unsigned int ticks_left = beat_division_map[drum_sequences[0].beat_division];
+    unsigned int ticks_left = beat_division_map[drum_sequence.beat_division];
     for (int i=0; i < 16; i++) {
         byte current_note = beat % (drum_tracks[i].length);  // Sequence length is 0 indexed
         // Play the drum
         lcd.setCursor(i, 1);
         if (calculated_drum_tracks[i][current_note]) {
             lcd.print(F("x"));
-            MIDI.sendNoteOn(drum_tracks[i].note, random(100, 127),  drum_sequences[0].channel + 1);
-            add_to_kill_list(drum_tracks[i].note, drum_sequences[0].channel + 1, ticks_left);
+            MIDI.sendNoteOn(drum_tracks[i].note, random(100, 127),  drum_sequence.channel + 1);
+            add_to_kill_list(drum_tracks[i].note, drum_sequence.channel + 1, ticks_left);
         } else {
             lcd.print(F(" "));
         }

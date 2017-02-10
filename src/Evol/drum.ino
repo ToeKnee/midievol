@@ -13,13 +13,8 @@ struct DrumSequence {
 };
 
 DrumTrack drum_tracks[16];
-DrumSequence drum_sequences[16] {
-    {
-        0,
-        10,
-        sixteenth,
-    }
-};
+DrumSequence drum_sequence;
+const int size_of_drum_sequence = sizeof(drum_sequence) + sizeof(drum_tracks);
 
 int step_status = 0;
 bool drum_track[64];
@@ -94,7 +89,7 @@ void euclidean_build(byte track, byte beats, byte length, byte rotation, byte no
     /* Serial.println(""); */
 }
 
-// Bjorklund accessory function to build the output..
+// Bjorklund accessory function to build the output.
 void build_string (byte track, int level)  {
     if (level == -1) {
         calculated_drum_tracks[track][step_status] = false; //insert 0 into array
@@ -116,10 +111,13 @@ void build_string (byte track, int level)  {
 
 
 void init_drums() {
+    drum_sequence.channel = 10;
+    drum_sequence.beat_division = sixteenth;
     for (int x = 0; x < 16; x++){
         euclidean_build(x, 0, 4, 0, 35 + x);
         drum_track_edit_mode[x] = BEATS;
     }
+    loadDrumSequence(true);
 }
 
 void randomDrumPattern() {
@@ -196,24 +194,128 @@ void update_drumtrack(byte encoder, byte value) {
     }
     status_display += drum_tracks[encoder].length;
 
-    status_display += F(" ");
+    status_display += F("  ");
     // Rotation
-    if (drum_tracks[encoder].rotation < 100) {
+    if (drum_tracks[encoder].rotation < 10) {
         status_display += F("  ");
-    } else if (drum_tracks[encoder].rotation < 10) {
+    } else if (drum_tracks[encoder].rotation < 100) {
         status_display += F(" ");
     }
     status_display += drum_tracks[encoder].rotation;
 
-    status_display += F(" ");
+    status_display += F("  ");
     // Note
-    if (drum_tracks[encoder].note < 100) {
+    if (drum_tracks[encoder].note < 10) {
         status_display += F("  ");
-    } else if (drum_tracks[encoder].note < 10) {
+    } else if (drum_tracks[encoder].note < 100) {
         status_display += F(" ");
     }
     status_display += drum_tracks[encoder].note;
 
+    if (drum_track_edit_mode[encoder] == BEATS) {
+        cursor_x = 0;
+        cursor_y = 1;
+        cursor_display = true;
+    } else if (drum_track_edit_mode[encoder] == ROTATION) {
+        cursor_x = 6;
+        cursor_y = 1;
+        cursor_display = true;
+    } else if (drum_track_edit_mode[encoder] == NOTE) {
+        cursor_x = 11;
+        cursor_y = 1;
+        cursor_display = true;
+    }
+
     status_timeout = micros() + 2000000;
+    ui_dirty = true;
+}
+
+
+void adjustDrumSequenceIndex(byte adjustment) {
+    drum_sequence.id += adjustment;
+
+    status_display = F("");
+    status_display += drum_sequence.id + 1;  // Display off by one.
+
+    ui_dirty = true;
+}
+
+
+unsigned int getDrumSequenceAddress(byte id) {
+    return end_of_sequences + (size_of_drum_sequence * id);
+}
+
+void loadDrumSequence(bool quiet) {
+    if (!quiet) {
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print(F("Loading"));
+        lcd.setCursor(0, 1);
+        lcd.print(F("Sequence "));
+        lcd.print(drum_sequence.id + 1);
+    }
+    // TODO: Optimisation: Use sequential reads
+    unsigned int address = getDrumSequenceAddress(drum_sequence.id);
+    int offset = 0;
+
+    // Sequence
+    drum_sequence.channel = myEEPROM.read(address + offset);
+    offset += 1;
+    drum_sequence.beat_division = myEEPROM.read(address + offset);
+    offset += 1;
+
+    // Track
+    for (byte i = 0; i < 16; i++) {
+        drum_tracks[i].beats = myEEPROM.read(address + offset);
+        offset += 1;
+        drum_tracks[i].length = myEEPROM.read(address + offset);
+        offset += 1;
+        drum_tracks[i].rotation = myEEPROM.read(address + offset);
+        offset += 1;
+        drum_tracks[i].note = myEEPROM.read(address + offset);
+        offset += 1;
+
+        // And build the tracks
+        euclidean_build(
+                        i,
+                        drum_tracks[i].beats,
+                        drum_tracks[i].length,
+                        drum_tracks[i].rotation,
+                        drum_tracks[i].note
+                        );
+    }
+    ui_dirty = true;
+}
+
+void saveDrumSequence() {
+    // TODO: Optimisation: Read before write
+    // TODO: Optimisation: Use sequential writes
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Saving"));
+    lcd.setCursor(0, 1);
+    lcd.print(F("Sequence "));
+    lcd.print(drum_sequence.id  + 1);
+    unsigned int address = getDrumSequenceAddress(drum_sequence.id);
+    int offset = 0;
+
+    // Sequence
+    myEEPROM.write(address + offset, drum_sequence.channel);
+    offset += 1;
+    myEEPROM.write(address + offset, drum_sequence.beat_division);
+    offset += 1;
+
+    // Sequence Notes
+    for (byte i = 0; i < 16; i++) {
+        myEEPROM.write(address + offset, drum_tracks[i].beats);
+        offset += 1;
+        myEEPROM.write(address + offset, drum_tracks[i].length);
+        offset += 1;
+        myEEPROM.write(address + offset, drum_tracks[i].rotation);
+        offset += 1;
+        myEEPROM.write(address + offset, drum_tracks[i].note);
+        offset += 1;
+    }
+
     ui_dirty = true;
 }

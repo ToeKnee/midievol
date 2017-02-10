@@ -93,12 +93,15 @@ byte shift_char[8] = {
     0b01110,
     0b00000
 };
+byte cursor_x = 0;
+byte cursor_y = 0;
+bool cursor_display = false;
 unsigned long status_timeout = micros();
 
 const byte REST = 128;
 const byte TIE = 129;
 struct Note {
-    byte note; // 0 to 127
+    byte note; // 0 to 129
     byte velocity;  // 0 to 127
     byte note_length; // BeatDivision
 };
@@ -168,6 +171,9 @@ Note sequences_notes[16][64];
 
 // Address and sizes needed for loading / saving
 const int size_of_sequence = sizeof(sequences[0]) + sizeof(sequences_notes[0]);
+// Assuming 256 sequences, The end of sequence address space
+const int end_of_sequences = size_of_sequence * 256;
+
 
 void setup() {
     // Set up the custom characters
