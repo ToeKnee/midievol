@@ -13,6 +13,11 @@ void timerIsr() {
     encoder_9->service();
     encoder_10->service();
     encoder_11->service();
+
+    encoder_12->service();
+    encoder_13->service();
+    encoder_14->service();
+    encoder_15->service();
 }
 
 void handleEncoder(byte encoder, byte value) {
