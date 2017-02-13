@@ -74,6 +74,7 @@ void handleEncoder(byte encoder, byte value) {
 void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
     if (button != ClickEncoder::Open) {
         if (mode == sequencer) {
+            cursor_display = false;
             if (button == ClickEncoder::Clicked) {
                 if (shift) {
                     if (encoder == 4) {
@@ -84,6 +85,7 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
                 }
             }
         } else if (mode == drum) {
+            cursor_display = false;
             if (button == ClickEncoder::Clicked) {
                 if (shift) {
                     if (encoder == 4) {
@@ -94,12 +96,24 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
                 } else {
                     // Cycle the mode
                     if (drum_track_edit_mode[encoder] == BEATS) {
+                        drum_track_edit_mode[encoder] = LENGTH;
+                        cursor_x = 4;
+                        cursor_y = 1;
+                    } else if (drum_track_edit_mode[encoder] == LENGTH) {
                         drum_track_edit_mode[encoder] = ROTATION;
+                        cursor_x = 6;
+                        cursor_y = 1;
                     } else if (drum_track_edit_mode[encoder] == ROTATION) {
                         drum_track_edit_mode[encoder] = NOTE;
+                        cursor_x = 11;
+                        cursor_y = 1;
                     } else if (drum_track_edit_mode[encoder] == NOTE) {
                         drum_track_edit_mode[encoder] = BEATS;
+                        cursor_x = 1;
+                        cursor_y = 1;
                     }
+                    cursor_display = true;
+                    ui_dirty = true;
                 }
             }
         }
