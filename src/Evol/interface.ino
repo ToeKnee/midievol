@@ -1,25 +1,3 @@
-void timerIsr() {
-    encoder_0->service();
-    encoder_1->service();
-    encoder_2->service();
-    encoder_3->service();
-
-    encoder_4->service();
-    encoder_5->service();
-    encoder_6->service();
-    encoder_7->service();
-
-    encoder_8->service();
-    encoder_9->service();
-    encoder_10->service();
-    encoder_11->service();
-
-    encoder_12->service();
-    encoder_13->service();
-    encoder_14->service();
-    encoder_15->service();
-}
-
 void handleEncoder(byte encoder, byte value) {
     if (value != 0) {
         // Sequencer mode
