@@ -113,7 +113,7 @@ void build_string (byte track, int level)  {
 
 void init_drums() {
     drum_sequence.channel = 10;
-    drum_sequence.beat_division = sixteenth;
+    drum_sequence.beat_division = SIXTEENTH;
     for (int x = 0; x < 16; x++){
         euclidean_build(x, 0, 16, 0, 35 + x);
         drum_track_edit_mode[x] = BEATS;

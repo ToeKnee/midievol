@@ -123,12 +123,12 @@ struct Sequence {
 };
 
 typedef enum BeatDivision{
-    whole,
-    half,
-    quarter,
-    eigth,
-    sixteenth,
-    thirtysecondth
+    WHOLE,
+    HALF,
+    QUARTER,
+    EIGTH,
+    SIXTEENTH,
+    THIRTYSECONDTH
 };
 const byte beat_division_map[] = {96, 48, 24, 12, 6, 3};
 
@@ -151,9 +151,9 @@ byte timeSignatureDenominator = 4; // For show only, use the actual time signatu
 
 // State
 typedef enum Mode{
-    sequencer,
-    drum,
-    song,
+    SEQUENCER,
+    DRUM,
+    SONG,
 };
 Mode mode;
 byte display_note;
@@ -278,7 +278,7 @@ void setup() {
     microseconds_per_pulse = pulse_len_from_bpm(bpm);
 
     // Set the mode
-    mode = sequencer;
+    mode = SEQUENCER;
 
     // Clear UI
     lcd.clear();

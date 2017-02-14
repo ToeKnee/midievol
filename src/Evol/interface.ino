@@ -1,7 +1,7 @@
 void handleEncoder(byte encoder, byte value) {
     if (value != 0) {
         // Sequencer mode
-        if (mode == sequencer) {
+        if (mode == SEQUENCER) {
             // Default unshifted case, edit the note
             if (!shift) {
                 /* For the first sixteen the encoder and the note number match.
@@ -25,7 +25,7 @@ void handleEncoder(byte encoder, byte value) {
                     adjustSequenceIndex(value);
                 }
             }
-        } else if (mode == drum) { // Drum mode
+        } else if (mode == DRUM) { // Drum mode
             if (!shift) {
                 /* For the sixteen encoders, handle setting length,
                    beats, rotation, velocity humanisation and note.
@@ -51,7 +51,7 @@ void handleEncoder(byte encoder, byte value) {
 
 void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
     if (button != ClickEncoder::Open) {
-        if (mode == sequencer) {
+        if (mode == SEQUENCER) {
             cursor_display = false;
             if (button == ClickEncoder::Clicked) {
                 if (shift) {
@@ -62,7 +62,7 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
                     }
                 }
             }
-        } else if (mode == drum) {
+        } else if (mode == DRUM) {
             cursor_display = false;
             if (button == ClickEncoder::Clicked) {
                 if (shift) {
@@ -103,13 +103,13 @@ void handleButtons() {
         if (debouncer_play.fell()) {
             // Shift - change mode
             if (shift) {
-                if (mode == sequencer) {
-                    mode = drum;
+                if (mode == SEQUENCER) {
+                    mode = DRUM;
                     sequence_id = 0;
-                } else if (mode == drum) {
-                    mode = song;
+                } else if (mode == DRUM) {
+                    mode = SONG;
                 } else {
-                    mode = sequencer;
+                    mode = SEQUENCER;
                     sequence_id = 0;
                 }
             } else {

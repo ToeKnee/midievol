@@ -3,14 +3,14 @@
         sequences[i].id = i;
         sequences[i].channel = i + 1;
         sequences[i].length = 11;
-        sequences[i].beat_division = quarter;
-        sequences[i].note_length = quarter;
+        sequences[i].beat_division = QUARTER;
+        sequences[i].note_length = QUARTER;
         sequences[i].note_length_from_sequence = true;
 
         for (int j = 0; j < 64; j++){
             sequences_notes[i][j].note = random(129);
             sequences_notes[i][j].velocity = random(100, 127);
-            sequences_notes[i][j].note_length = quarter;
+            sequences_notes[i][j].note_length = QUARTER;
         }
     }
 
@@ -118,7 +118,6 @@ void update_note(byte note, byte value) {
 
     ui_dirty = true;
 }
-
 
 
 unsigned int getSequenceAddress(byte id) {

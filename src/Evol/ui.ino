@@ -2,9 +2,9 @@ void draw_ui() {
     ui_dirty = false;
     // Write the mode
     lcd.setCursor(0, 0);
-    if (mode == sequencer) {
+    if (mode == SEQUENCER) {
         lcd.print(F("SEQ "));
-    } else if (mode == drum) {
+    } else if (mode == DRUM) {
         lcd.print(F("DRM "));
     }
     if (sequence_id < 10) {
@@ -42,7 +42,7 @@ void draw_ui() {
     }
     lcd.print(bpm);
 
-    if (mode == sequencer) {
+    if (mode == SEQUENCER) {
         // Display Status
         lcd.setCursor(0, 1);
         while (status_display.length() <= 10) {
@@ -55,7 +55,7 @@ void draw_ui() {
         String note_display;
         note_name(note_display, sequences_notes[sequence_id][display_note].note);
         lcd.print(note_display);
-    } else if (mode == drum) {
+    } else if (mode == DRUM) {
         // Display Status
         if (status_timeout > micros()) {
             lcd.setCursor(0, 1);

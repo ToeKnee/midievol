@@ -44,9 +44,9 @@ void handleClock() {
     // Handle playing notes at the right time
     pulse_count += 1;
     if (pulse_count % beat_division_map[sequences[sequence_id].beat_division] == 0) {
-        if (mode == sequencer) {
+        if (mode == SEQUENCER) {
             play_note();
-        } else if (mode == drum) {
+        } else if (mode == DRUM) {
             play_drums();
         }
         pulse_count = 0;
