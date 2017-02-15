@@ -21,7 +21,7 @@
 
 // Initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(12, 11, 7, 8, 9, 10);
-String status_display; // Please keep <= 10 chars
+String status_display; // Please keep <= 16 chars
 
 // Eeprom
 extEEPROM myEEPROM(kbits_1024, 1, 128);
@@ -47,8 +47,6 @@ struct MIDISettings : public midi::DefaultSettings {
     static const bool UseRunningStatus = false;
 };
 MIDI_CREATE_CUSTOM_INSTANCE(HardwareSerial, Serial1, MIDI, MIDISettings);
-
-bool ui_dirty = false;
 
 // Custom Characters
 byte heart[8] = {
@@ -94,10 +92,13 @@ byte shift_char[8] = {
     0b01110,
     0b00000
 };
+
+bool ui_dirty = false;
 byte cursor_x = 0;
 byte cursor_y = 0;
 bool cursor_display = false;
-unsigned long status_timeout = micros();
+const unsigned long timeOut = 2000000;
+unsigned long status_timeout;
 
 const byte REST = 128;
 const byte TIE = 129;

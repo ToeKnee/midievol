@@ -19,10 +19,10 @@ void handleEncoder(byte encoder, byte value) {
                     adjustNoteLength(value);
                 } else if (encoder == 3) {  // Handle Sequence Length Changes
                     adjustSequenceLength(value);
-                } else if (encoder == 4) {  // Handle Load position
-                    adjustSequenceIndex(value);
-                } else if (encoder == 5) {  // Handle Save position
-                    adjustSequenceIndex(value);
+                } else if (encoder == 12) {  // Handle Load position
+                    adjustSequenceIndex(value, true);
+                } else if (encoder == 15) {  // Handle Save position
+                    adjustSequenceIndex(value, false);
                 }
             }
         } else if (mode == DRUM) { // Drum mode
@@ -38,10 +38,10 @@ void handleEncoder(byte encoder, byte value) {
                     adjustBeatDivision(value);  // TODO: Drums should have own beat division
                 } else if (encoder == 2) {  // Handle Note Length Changes
                     randomDrumPattern();
-                } else if (encoder == 4) {  // Handle Load position
-                    adjustDrumSequenceIndex(value);
-                } else if (encoder == 5) {  // Handle Save position
-                    adjustDrumSequenceIndex(value);
+                } else if (encoder == 12) {  // Handle Load position
+                    adjustDrumSequenceIndex(value, true);
+                } else if (encoder == 15) {  // Handle Save position
+                    adjustDrumSequenceIndex(value, false);
                 }
             }
         }
@@ -55,9 +55,9 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
             cursor_display = false;
             if (button == ClickEncoder::Clicked) {
                 if (shift) {
-                    if (encoder == 4) {
+                    if (encoder == 12) {
                         loadSequence(false);
-                    } else if (encoder == 5) {
+                    } else if (encoder == 15) {
                         saveSequence();
                     }
                 }
@@ -66,9 +66,9 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
             cursor_display = false;
             if (button == ClickEncoder::Clicked) {
                 if (shift) {
-                    if (encoder == 4) {
+                    if (encoder == 12) {
                         loadDrumSequence(false);
-                    } else if (encoder == 5) {
+                    } else if (encoder == 15) {
                         saveDrumSequence();
                     }
                 } else {

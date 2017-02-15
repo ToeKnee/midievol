@@ -25,6 +25,7 @@ void adjustBPM(byte adjustment) {
     status_display = F("BPM: ");
     status_display += bpm;
 
+    status_timeout = micros() + timeOut;
     ui_dirty = true;
 }
 
@@ -36,7 +37,7 @@ void adjustBeatDivision(byte adjustment) {
         sequences[sequence_id].beat_division = 5;
     }
 
-    status_display = F("Beat: ");
+    status_display = F("Division: ");
     // There are 6 possible beat divisions. Choose one.
     sequences[sequence_id].beat_division = sequences[sequence_id].beat_division % 6;
     if (sequences[sequence_id].beat_division == 0) {
@@ -53,6 +54,7 @@ void adjustBeatDivision(byte adjustment) {
         status_display += F("1/32");
     }
 
+    status_timeout = micros() + timeOut;
     ui_dirty = true;
 }
 
@@ -81,15 +83,21 @@ void adjustNoteLength(byte adjustment) {
         status_display += F("1/32");
     }
 
+    status_timeout = micros() + timeOut;
     ui_dirty = true;
 }
 
-void adjustSequenceIndex(byte adjustment) {
+void adjustSequenceIndex(byte adjustment, bool loading) {
     sequences[sequence_id].id += adjustment;
 
-    status_display = F("");
+    if (loading) {
+        status_display = F("Load Seq: ");
+    } else {
+        status_display = F("Save Seq: ");
+    }
     status_display += sequences[sequence_id].id + 1;  // Display off by one.
 
+    status_timeout = micros() + timeOut;
     ui_dirty = true;
 }
 
@@ -99,6 +107,7 @@ void adjustSequenceLength(byte adjustment) {
     status_display = F("Steps: ");
     status_display += sequences[sequence_id].length + 1;  // Display off by one.
 
+    status_timeout = micros() + timeOut;
     ui_dirty = true;
 }
 
@@ -116,6 +125,7 @@ void update_note(byte note, byte value) {
     status_display += F(" ");
     status_display += sequences_notes[sequence_id][display_note].velocity;
 
+    status_timeout = micros() + timeOut;
     ui_dirty = true;
 }
 

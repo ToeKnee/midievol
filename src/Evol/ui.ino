@@ -42,29 +42,29 @@ void draw_ui() {
     }
     lcd.print(bpm);
 
-    if (mode == SEQUENCER) {
-        // Display Status
-        lcd.setCursor(0, 1);
-        while (status_display.length() <= 10) {
-            status_display += " ";
-        }
-        lcd.print(status_display);
+    // Display Status
+    lcd.setCursor(0, 1);
+    while (status_display.length() <= 16) {
+        status_display += " ";
+    }
+    lcd.print(status_display);
 
-        // Display last note edited
+    if (playing && status_timeout > micros()) {
         lcd.setCursor(12, 1);
         String note_display;
         note_name(note_display, sequences_notes[sequence_id][display_note].note);
         lcd.print(note_display);
-    } else if (mode == DRUM) {
-        // Display Status
-        if (status_timeout > micros()) {
-            lcd.setCursor(0, 1);
-            while (status_display.length() <= 16) {
-                status_display += " ";
-            }
-            lcd.print(status_display);
-        }
     }
+
+    // Display Status
+    if (status_timeout < micros()) {
+        status_display = F("");
+    }
+    lcd.setCursor(0, 1);
+    while (status_display.length() <= 16) {
+        status_display += " ";
+    }
+    lcd.print(status_display);
 
     if (cursor_display) {
         lcd.setCursor(cursor_x, cursor_y);

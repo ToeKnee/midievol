@@ -211,17 +211,22 @@ void update_drumtrack(byte encoder, byte value) {
     }
     status_display += drum_tracks[encoder].note;
 
-    status_timeout = micros() + 2000000;
+    status_timeout = micros() + timeOut;
     ui_dirty = true;
 }
 
 
-void adjustDrumSequenceIndex(byte adjustment) {
+void adjustDrumSequenceIndex(byte adjustment, bool loading) {
     drum_sequence.id += adjustment;
 
-    status_display = F("");
+    if (loading) {
+        status_display = F("Load Seq: ");
+    } else {
+        status_display = F("Save Seq: ");
+    }
     status_display += drum_sequence.id + 1;  // Display off by one.
 
+    status_timeout = micros() + timeOut;
     ui_dirty = true;
 }
 
