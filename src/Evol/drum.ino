@@ -30,6 +30,13 @@ typedef enum DrumTrackEditMode {
 };
 DrumTrackEditMode drum_track_edit_mode[16];
 
+typedef enum DrumTrackInitMode {
+    SIMPLE_DRUM_PATTERN,
+    RANDOM_DRUM_PATTERN,
+};
+DrumTrackInitMode drum_track_init_mode = SIMPLE_DRUM_PATTERN;
+
+
 void euclidean_build(byte track, byte beats, byte length, byte rotation, byte note)  {
     // Set the track details
     drum_tracks[track].beats = beats;
@@ -121,6 +128,45 @@ void init_drums() {
     loadDrumSequence(true);
 }
 
+
+void initDrumPatternChoice() {
+    if (drum_track_init_mode == SIMPLE_DRUM_PATTERN) {
+        drum_track_init_mode = RANDOM_DRUM_PATTERN;
+        status_display = F("Init: Random");
+    } else {
+        drum_track_init_mode = SIMPLE_DRUM_PATTERN;
+        status_display = F("Init: Simple");
+    }
+    status_timeout = micros() + timeOut;
+    ui_dirty = true;
+}
+
+void initDrumPattern() {
+    if (drum_track_init_mode == SIMPLE_DRUM_PATTERN) {
+        simpleDrumPattern();
+        status_display = F("Simple Pattern");
+    } else {
+        randomDrumPattern();
+        status_display = F("Random Pattern");
+    }
+
+    status_timeout = micros() + timeOut;
+    ui_dirty = true;
+
+}
+
+void simpleDrumPattern() {
+    euclidean_build(0, 4, 16, 0, 35);
+    euclidean_build(1, 4, 16, 2, 38);
+    euclidean_build(2, 1, 1, 0, 46);
+    euclidean_build(3, 1, 4, 3, 42);
+    euclidean_build(4, 1, 64, 0, 49);
+
+    for (int i=5; i < 16; i++) {
+        euclidean_build(i, 0, 16, 0, 35 + i);
+    }
+}
+
 void randomDrumPattern() {
     // 4-16 random tracks
     byte tracks = random(4, 16);
@@ -130,7 +176,7 @@ void randomDrumPattern() {
     }
     // Empty out remaining tracks
     for (int i=0; i < 16 - tracks; i++) {
-        euclidean_build(tracks + i, 0, 1, random(3), 35 + i);
+        euclidean_build(tracks + i, 0, 1, 0, 35 + i);
     }
 }
 

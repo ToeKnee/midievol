@@ -36,10 +36,10 @@ void handleEncoder(byte encoder, byte value) {
                     adjustBPM(value);
                 } else if (encoder == 1) {  // Handle Beat Division Changes
                     adjustBeatDivision(value);  // TODO: Drums should have own beat division
-                } else if (encoder == 2) {  // Handle Note Length Changes
-                    randomDrumPattern();
                 } else if (encoder == 12) {  // Handle Load position
                     adjustDrumSequenceIndex(value, true);
+                } else if (encoder == 13) {  // Handle Initialising Drum Patterns
+                    initDrumPatternChoice();
                 } else if (encoder == 15) {  // Handle Save position
                     adjustDrumSequenceIndex(value, false);
                 }
@@ -68,6 +68,8 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
                 if (shift) {
                     if (encoder == 12) {
                         loadDrumSequence(false);
+                    } else if (encoder == 13) {
+                        initDrumPattern();
                     } else if (encoder == 15) {
                         saveDrumSequence();
                     }
