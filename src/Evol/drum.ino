@@ -82,13 +82,13 @@ void euclidean_build(byte track, byte beats, byte length, byte rotation, byte no
     }
 
     // Handle rotation
-    for (byte x=0; x < rotation; x++) {
+    for (byte x=0; x < (length - rotation); x++) {
         bool first_to_last = calculated_drum_tracks[track][0];
         for (byte i=0; i < length - 1; i++) {
-                calculated_drum_tracks[track][i] = calculated_drum_tracks[track][i + 1];
-            }
-            calculated_drum_tracks[track][length -1] = first_to_last;
+            calculated_drum_tracks[track][i] = calculated_drum_tracks[track][i + 1];
         }
+        calculated_drum_tracks[track][length -1] = first_to_last;
+    }
 
     // DEBUG
     /* for (byte i=0; i < length; i++) { */
