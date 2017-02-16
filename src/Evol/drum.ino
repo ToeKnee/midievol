@@ -31,10 +31,13 @@ typedef enum DrumTrackEditMode {
 DrumTrackEditMode drum_track_edit_mode[16];
 
 typedef enum DrumTrackInitMode {
+    EMPTY_DRUM_PATTERN,
     SIMPLE_DRUM_PATTERN,
+    FUNKY_DRUM_PATTERN,
+    SYNCOPATED_DRUM_PATTERN,
     RANDOM_DRUM_PATTERN,
 };
-DrumTrackInitMode drum_track_init_mode = SIMPLE_DRUM_PATTERN;
+DrumTrackInitMode drum_track_init_mode = EMPTY_DRUM_PATTERN;
 
 
 void euclidean_build(byte track, byte beats, byte length, byte rotation, byte note)  {
@@ -129,22 +132,45 @@ void init_drums() {
 }
 
 
-void initDrumPatternChoice() {
-    if (drum_track_init_mode == SIMPLE_DRUM_PATTERN) {
-        drum_track_init_mode = RANDOM_DRUM_PATTERN;
-        status_display = F("Init: Random");
-    } else {
-        drum_track_init_mode = SIMPLE_DRUM_PATTERN;
+void initDrumPatternChoice(byte value) {
+    // Update the value with the current state
+    value += int(drum_track_init_mode);
+    if (value > 127) {  // Handle wrapping backwards
+        value = 4;
+    } else if (drum_track_init_mode > 4) {  // Handle wrapping forwards
+        value = 0;
+    }
+    // Assign the value
+    drum_track_init_mode = value;
+
+    if (drum_track_init_mode == EMPTY_DRUM_PATTERN) {
+        status_display = F("Init: Empty");
+    } else if (drum_track_init_mode == SIMPLE_DRUM_PATTERN) {
         status_display = F("Init: Simple");
+    } else if (drum_track_init_mode == FUNKY_DRUM_PATTERN) {
+        status_display = F("Init: Funky");
+    } else if (drum_track_init_mode == SYNCOPATED_DRUM_PATTERN) {
+        status_display = F("Init: Syncopated");
+    } else {
+        status_display = F("Init: Random");
     }
     status_timeout = micros() + timeOut;
     ui_dirty = true;
 }
 
 void initDrumPattern() {
-    if (drum_track_init_mode == SIMPLE_DRUM_PATTERN) {
+    if (drum_track_init_mode == EMPTY_DRUM_PATTERN) {
+        emptyDrumPattern();
+        status_display = F("Empty Pattern");
+    } else if (drum_track_init_mode == SIMPLE_DRUM_PATTERN) {
         simpleDrumPattern();
         status_display = F("Simple Pattern");
+    } else if (drum_track_init_mode == FUNKY_DRUM_PATTERN) {
+        funkyDrumPattern();
+        status_display = F("Funky Pattern");
+    } else if (drum_track_init_mode == SYNCOPATED_DRUM_PATTERN) {
+        syncopatedDrumPattern();
+        status_display = F("Syncopated Pattern");
     } else {
         randomDrumPattern();
         status_display = F("Random Pattern");
@@ -155,12 +181,43 @@ void initDrumPattern() {
 
 }
 
+void emptyDrumPattern() {
+    for (int i=0; i < 16; i++) {
+        euclidean_build(i, 0, 16, 0, 35 + i);
+    }
+}
+
 void simpleDrumPattern() {
     euclidean_build(0, 4, 16, 0, 35);
     euclidean_build(1, 4, 16, 2, 38);
     euclidean_build(2, 1, 1, 0, 46);
-    euclidean_build(3, 1, 4, 3, 42);
+    euclidean_build(3, 1, 4, 2, 42);
     euclidean_build(4, 1, 64, 0, 49);
+
+    for (int i=5; i < 16; i++) {
+        euclidean_build(i, 0, 16, 0, 35 + i);
+    }
+}
+
+void funkyDrumPattern() {
+    euclidean_build(0, 4, 16, 0, 35);
+    euclidean_build(1, 5, 16, 2, 38);
+    euclidean_build(2, 4, 16, 3, 42);
+    euclidean_build(3, 12, 16, 0, 46);
+    euclidean_build(5, 2, 3, 1, 53);
+    euclidean_build(6, 5, 13, 0, 75);
+
+    for (int i=7; i < 16; i++) {
+        euclidean_build(i, 0, 16, 0, 35 + i);
+    }
+}
+
+void syncopatedDrumPattern() {
+    euclidean_build(2, 2, 3, 0, 35);
+    euclidean_build(1, 2, 5, 2, 38);
+    euclidean_build(2, 24, 35, 0, 46);
+    euclidean_build(3, 1, 6, 3, 43);
+    euclidean_build(4, 4, 11, 0, 60);
 
     for (int i=5; i < 16; i++) {
         euclidean_build(i, 0, 16, 0, 35 + i);
@@ -172,7 +229,7 @@ void randomDrumPattern() {
     byte tracks = random(4, 16);
     for (int x = 0; x < tracks; x++){
         int steps = random(64);
-        euclidean_build(x, random(steps / 3), steps, random(steps), 35 + x);
+        euclidean_build(x, random(steps / 2), steps, random(steps), 35 + x);
     }
     // Empty out remaining tracks
     for (int i=0; i < 16 - tracks; i++) {
