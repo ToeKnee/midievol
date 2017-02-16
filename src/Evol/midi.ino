@@ -174,18 +174,29 @@ void play_note() {
 
 void play_drums() {
     unsigned int ticks_left = beat_division_map[drum_sequence.beat_division];
+    bool display_drums = status_timeout < micros();
+    if (display_drums) {
+        status_timeout = next_clock_pulse + 10000;
+        ui_dirty = true;
+        status_display = F("");
+    }
     for (int i=0; i < 16; i++) {
         byte current_note = beat % (drum_tracks[i].length);  // Sequence length is 0 indexed
         // Play the drum
-        lcd.setCursor(i, 1);
         if (calculated_drum_tracks[i][current_note]) {
-            lcd.print(F("x"));
+            if (display_drums) {
+                status_display += F("x");
+            }
             MIDI.sendNoteOn(drum_tracks[i].note, random(100, 127),  drum_sequence.channel + 1);
             add_to_kill_list(drum_tracks[i].note, drum_sequence.channel + 1, ticks_left);
         } else {
-            lcd.print(F(" "));
+            if (display_drums) {
+                status_display += F(".");
+            }
         }
     }
+
+    // Serial.println(status_display);
 };
 
 void init_kill_list() {
