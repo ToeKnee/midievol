@@ -261,7 +261,7 @@ void update_drumtrack(byte encoder, byte value) {
     } else if (drum_track_edit_mode[encoder] == DRUM_TRACK_ROTATION) {
         drum_tracks[encoder].rotation += value;
         if (drum_tracks[encoder].rotation > 127) { // Looping << backwards
-            drum_tracks[encoder].rotation = 64;
+            drum_tracks[encoder].rotation = drum_tracks[encoder].length;
         } else if (drum_tracks[encoder].rotation > drum_tracks[encoder].length) { // Looping >> forwards
             drum_tracks[encoder].rotation = 0;
         }
