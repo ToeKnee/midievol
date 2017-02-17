@@ -21,6 +21,8 @@ void handleEncoder(byte encoder, byte value) {
                     adjustSequenceLength(value);
                 } else if (encoder == 12) {  // Handle Load position
                     adjustSequenceIndex(value, true);
+                } else if (encoder == 13) {  // Handle Initialising Sequence Patterns
+                    initSequenceChoice(value);
                 } else if (encoder == 15) {  // Handle Save position
                     adjustSequenceIndex(value, false);
                 }
@@ -57,6 +59,8 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
                 if (shift) {
                     if (encoder == 12) {
                         loadSequence(false);
+                    } else if (encoder == 13) {
+                        initSequence();
                     } else if (encoder == 15) {
                         saveSequence();
                     }

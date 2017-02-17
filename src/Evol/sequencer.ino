@@ -1,8 +1,16 @@
- void init_sequencer() {
+typedef enum SequenceTrackInitMode {
+    EMPTY_SEQUENCE,
+    SIMPLE_SEQUENCE,
+    RANDOM_SEQUENCE,
+};
+SequenceTrackInitMode sequence_track_init_mode = EMPTY_SEQUENCE;
+
+
+void init_sequencer() {
     for (int i = 0; i < 16; i++){
         sequences[i].id = i;
         sequences[i].channel = i + 1;
-        sequences[i].length = 11;
+        sequences[i].length = 64;
         sequences[i].beat_division = QUARTER;
         sequences[i].note_length = QUARTER;
         sequences[i].note_length_from_sequence = true;
@@ -16,6 +24,71 @@
 
     // Load sequence 1
     loadSequence(true);
+}
+
+void initSequenceChoice(byte value) {
+    // Update the value with the current state
+    value += int(sequence_track_init_mode);
+    if (value > 127) {  // Handle wrapping backwards
+        value = 4;
+    } else if (sequence_track_init_mode > 4) {  // Handle wrapping forwards
+        value = 0;
+    }
+    // Assign the value
+    sequence_track_init_mode = value;
+
+    if (sequence_track_init_mode == EMPTY_SEQUENCE) {
+        status_display = F("Init: Empty");
+    } else if (sequence_track_init_mode == SIMPLE_SEQUENCE) {
+        status_display = F("Init: Simple");
+    } else {
+        status_display = F("Init: Random");
+    }
+    status_timeout = micros() + timeOut;
+    ui_dirty = true;
+}
+
+void initSequence() {
+    if (sequence_track_init_mode == EMPTY_SEQUENCE) {
+        emptySequence();
+        status_display = F("Empty Sequence");
+    } else if (sequence_track_init_mode == SIMPLE_SEQUENCE) {
+        simpleSequence();
+        status_display = F("Simple Sequence");
+    } else {
+        randomSequence();
+        status_display = F("Random Sequence");
+    }
+
+    status_timeout = micros() + timeOut;
+    ui_dirty = true;
+}
+
+void emptySequence() {
+    sequences[0].length = 64;
+    for (int i = 0; i < 64; i++){
+        sequences_notes[0][i].note = 129;
+        sequences_notes[0][i].velocity = 120;
+        sequences_notes[0][i].note_length = QUARTER;
+    }
+}
+
+void simpleSequence() {
+    sequences[0].length = 64;
+    for (int i = 0; i < 64; i++){
+        sequences_notes[0][i].note = 36 + i;
+        sequences_notes[0][i].velocity = 120;
+        sequences_notes[0][i].note_length = QUARTER;
+    }
+}
+
+void randomSequence() {
+    sequences[0].length = 64;
+    for (int i = 0; i < 64; i++){
+        sequences_notes[0][i].note = random(129);
+        sequences_notes[0][i].velocity = 120;
+        sequences_notes[0][i].note_length = QUARTER;
+    }
 }
 
 void adjustBPM(byte adjustment) {
