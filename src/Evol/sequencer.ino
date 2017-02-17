@@ -1,3 +1,4 @@
+
 typedef enum SequenceTrackInitMode {
     EMPTY_SEQUENCE,
     SIMPLE_SEQUENCE,
@@ -19,6 +20,7 @@ void init_sequencer() {
             sequences_notes[i][j].note = random(129);
             sequences_notes[i][j].velocity = random(100, 127);
             sequences_notes[i][j].note_length = QUARTER;
+            sequence_edit_mode[j] = SEQUENCE_NOTE;
         }
     }
 
@@ -184,22 +186,31 @@ void adjustSequenceLength(byte adjustment) {
     ui_dirty = true;
 }
 
-
 void update_note(byte note, byte value) {
-    sequences_notes[sequence_id][note].note += value;
-    if (sequences_notes[sequence_id][note].note == 255) { // Looped round 0 backwards
-        sequences_notes[sequence_id][note].note = 129;
-    } else if (sequences_notes[sequence_id][note].note > 129) {  // 127 Midi notes + 2 special cases
-        sequences_notes[sequence_id][note].note = 0;
+    if (sequence_edit_mode[note] == SEQUENCE_NOTE) {
+        sequences_notes[sequence_id][note].note += value;
+        if (sequences_notes[sequence_id][note].note > 200) { // Looping << backwards
+            sequences_notes[sequence_id][note].note = 129;
+        } else if (sequences_notes[sequence_id][note].note > 129) {  // Looping >> forwards. 127 Midi notes + 2 special cases
+            sequences_notes[sequence_id][note].note = 0;
+        }
+    } else if (sequence_edit_mode[note] == SEQUENCE_VELOCITY) {
+        sequences_notes[sequence_id][note].velocity += value;
+        if (sequences_notes[sequence_id][note].velocity > 200) { // Looping << backwards
+            sequences_notes[sequence_id][note].velocity = 127;
+        } else if (sequences_notes[sequence_id][note].velocity > 127) { // Looping >> forwards
+            sequences_notes[sequence_id][note].velocity = 0;
+        }
+    } else if (sequence_edit_mode[note] == SEQUENCE_NOTE_LENGTH) {
+        value += int(sequences_notes[sequence_id][note].note_length);
+        if (value > 200) { // Looping << backwards
+            value = 5;
+        } else if (value > 127) { // Looping >> forwards
+            value = 0;
+        }
+        sequences_notes[sequence_id][note].note_length = value;
     }
-
-    display_note = note;
-    note_name(status_display, sequences_notes[sequence_id][display_note].note);
-    status_display += F(" ");
-    status_display += sequences_notes[sequence_id][display_note].velocity;
-
-    status_timeout = micros() + timeOut;
-    ui_dirty = true;
+    displaySequenceNoteStatus(note);
 }
 
 
@@ -278,5 +289,54 @@ void saveSequence() {
         offset += 1;
     }
 
+    ui_dirty = true;
+}
+
+void displaySequenceNoteStatus(byte note) {
+    // Update status display
+    // Note
+    note_name(status_display, sequences_notes[sequence_id][note].note);
+
+    // Velocity
+    status_display += F(" V");
+    if (sequences_notes[sequence_id][note].velocity < 10) {
+        status_display += F("  ");
+    } else if (sequences_notes[sequence_id][note].velocity < 100) {
+        status_display += F(" ");
+    }
+    status_display += sequences_notes[sequence_id][note].velocity;
+
+    // Note Length
+    status_display += F(" L");
+    // There are 6 possible beat divisions. Choose one.
+    sequences_notes[sequence_id][note].note_length = sequences_notes[sequence_id][note].note_length % 6;
+    if (sequences_notes[sequence_id][note].note_length == 0) {
+        status_display += F("1/1");
+    } else if (sequences_notes[sequence_id][note].note_length == 1) {
+        status_display += F("1/2");
+    } else if (sequences_notes[sequence_id][note].note_length == 2) {
+        status_display += F("1/4");
+    } else if (sequences_notes[sequence_id][note].note_length == 3) {
+        status_display += F("1/8");
+    } else if (sequences_notes[sequence_id][note].note_length == 4) {
+        status_display += F("1/16");
+    } else if (sequences_notes[sequence_id][note].note_length == 5) {
+        status_display += F("1/32");
+    }
+
+    // Put a cursor under the current mode
+    if (sequence_edit_mode[note] == SEQUENCE_NOTE) {
+        cursor_x = 0;
+        cursor_y = 1;
+    } else if (sequence_edit_mode[note] == SEQUENCE_VELOCITY) {
+        cursor_x = 5;
+        cursor_y = 1;
+    } else if (sequence_edit_mode[note] == SEQUENCE_NOTE_LENGTH) {
+        cursor_x = 10;
+        cursor_y = 1;
+    }
+    cursor_display = true;
+
+    status_timeout = micros() + timeOut;
     ui_dirty = true;
 }

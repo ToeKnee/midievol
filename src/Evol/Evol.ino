@@ -123,6 +123,13 @@ struct Sequence {
     bool note_length_from_sequence;
 };
 
+typedef enum SequenceEditMode {
+    SEQUENCE_NOTE,
+    SEQUENCE_VELOCITY,
+    SEQUENCE_NOTE_LENGTH,
+};
+SequenceEditMode sequence_edit_mode[64];
+
 typedef enum BeatDivision{
     WHOLE,
     HALF,

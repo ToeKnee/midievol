@@ -63,7 +63,19 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
                     } else if (encoder == 15) {
                         saveSequence();
                     }
-                }
+                } else {
+                   // Cycle the mode
+                    if (sequence_edit_mode[encoder] == SEQUENCE_NOTE) {
+                        sequence_edit_mode[encoder] = SEQUENCE_VELOCITY;
+                    } else if (sequence_edit_mode[encoder] == SEQUENCE_VELOCITY) {
+                        sequence_edit_mode[encoder] = SEQUENCE_NOTE_LENGTH;
+                    } else if (sequence_edit_mode[encoder] == SEQUENCE_NOTE_LENGTH) {
+                        sequence_edit_mode[encoder] = SEQUENCE_NOTE;
+                    }
+
+                    // Display the latest status
+                    displaySequenceNoteStatus(encoder);
+                 }
             }
         } else if (mode == DRUM) {
             if (button == ClickEncoder::Clicked) {
