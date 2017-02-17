@@ -77,14 +77,14 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
                     }
                 } else {
                     // Cycle the mode
-                    if (drum_track_edit_mode[encoder] == BEATS) {
-                        drum_track_edit_mode[encoder] = LENGTH;
-                    } else if (drum_track_edit_mode[encoder] == LENGTH) {
-                        drum_track_edit_mode[encoder] = ROTATION;
-                    } else if (drum_track_edit_mode[encoder] == ROTATION) {
-                        drum_track_edit_mode[encoder] = NOTE;
-                    } else if (drum_track_edit_mode[encoder] == NOTE) {
-                        drum_track_edit_mode[encoder] = BEATS;
+                    if (drum_track_edit_mode[encoder] == DRUM_TRACK_BEATS) {
+                        drum_track_edit_mode[encoder] = DRUM_TRACK_LENGTH;
+                    } else if (drum_track_edit_mode[encoder] == DRUM_TRACK_LENGTH) {
+                        drum_track_edit_mode[encoder] = DRUM_TRACK_ROTATION;
+                    } else if (drum_track_edit_mode[encoder] == DRUM_TRACK_ROTATION) {
+                        drum_track_edit_mode[encoder] = DRUM_TRACK_NOTE;
+                    } else if (drum_track_edit_mode[encoder] == DRUM_TRACK_NOTE) {
+                        drum_track_edit_mode[encoder] = DRUM_TRACK_BEATS;
                     }
 
                     // Display the latest status

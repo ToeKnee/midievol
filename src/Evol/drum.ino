@@ -23,10 +23,10 @@ byte count[64];
 byte calculated_drum_tracks[16][64];
 
 typedef enum DrumTrackEditMode {
-    BEATS,
-    LENGTH,
-    ROTATION,
-    NOTE
+    DRUM_TRACK_BEATS,
+    DRUM_TRACK_LENGTH,
+    DRUM_TRACK_ROTATION,
+    DRUM_TRACK_NOTE
 };
 DrumTrackEditMode drum_track_edit_mode[16];
 
@@ -126,7 +126,7 @@ void init_drums() {
     drum_sequence.beat_division = SIXTEENTH;
     for (int x = 0; x < 16; x++){
         euclidean_build(x, 0, 16, 0, 35 + x);
-        drum_track_edit_mode[x] = BEATS;
+        drum_track_edit_mode[x] = DRUM_TRACK_BEATS;
     }
     loadDrumSequence(true);
 }
@@ -239,14 +239,14 @@ void randomDrumPattern() {
 
 
 void update_drumtrack(byte encoder, byte value) {
-    if (drum_track_edit_mode[encoder] == BEATS) {
+    if (drum_track_edit_mode[encoder] == DRUM_TRACK_BEATS) {
         drum_tracks[encoder].beats += value;
         if (drum_tracks[encoder].beats > 127) { // Beats Looping << backwards
             drum_tracks[encoder].beats = drum_tracks[encoder].length;
         } else if (drum_tracks[encoder].beats > drum_tracks[encoder].length) { // Beats Looping >> forwards
             drum_tracks[encoder].beats = 0;
         }
-    } else if (drum_track_edit_mode[encoder] == LENGTH) {
+    } else if (drum_track_edit_mode[encoder] == DRUM_TRACK_LENGTH) {
         drum_tracks[encoder].length += value;
         if (drum_tracks[encoder].length > 127) { // Length Looping << backwards
             drum_tracks[encoder].length = 64;
@@ -258,14 +258,14 @@ void update_drumtrack(byte encoder, byte value) {
         if (drum_tracks[encoder].beats > drum_tracks[encoder].length) {
             drum_tracks[encoder].beats = drum_tracks[encoder].length;
         }
-    } else if (drum_track_edit_mode[encoder] == ROTATION) {
+    } else if (drum_track_edit_mode[encoder] == DRUM_TRACK_ROTATION) {
         drum_tracks[encoder].rotation += value;
         if (drum_tracks[encoder].rotation > 127) { // Looping << backwards
             drum_tracks[encoder].rotation = 64;
         } else if (drum_tracks[encoder].rotation > drum_tracks[encoder].length) { // Looping >> forwards
             drum_tracks[encoder].rotation = 0;
         }
-    } else if (drum_track_edit_mode[encoder] == NOTE) {
+    } else if (drum_track_edit_mode[encoder] == DRUM_TRACK_NOTE) {
         drum_tracks[encoder].note += value;
         if (drum_tracks[encoder].note > 200) { // Looping << backwards
             drum_tracks[encoder].note = 127;
@@ -414,16 +414,16 @@ void displayDrumTrackStatus(byte track) {
     status_display += drum_tracks[track].note;
 
     // Put a cursor under the current mode
-    if (drum_track_edit_mode[track] == BEATS) {
+    if (drum_track_edit_mode[track] == DRUM_TRACK_BEATS) {
         cursor_x = 1;
         cursor_y = 1;
-    } else if (drum_track_edit_mode[track] == LENGTH) {
+    } else if (drum_track_edit_mode[track] == DRUM_TRACK_LENGTH) {
         cursor_x = 4;
         cursor_y = 1;
-    } else if (drum_track_edit_mode[track] == ROTATION) {
+    } else if (drum_track_edit_mode[track] == DRUM_TRACK_ROTATION) {
         cursor_x = 6;
         cursor_y = 1;
-    } else if (drum_track_edit_mode[track] == NOTE) {
+    } else if (drum_track_edit_mode[track] == DRUM_TRACK_NOTE) {
         cursor_x = 11;
         cursor_y = 1;
     }
