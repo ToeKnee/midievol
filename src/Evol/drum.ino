@@ -282,40 +282,7 @@ void update_drumtrack(byte encoder, byte value) {
                     drum_tracks[encoder].note
                     );
 
-    // Update status display
-    // Beats
-    status_display = F("");
-    if (drum_tracks[encoder].beats < 10) {
-        status_display += F(" ");
-    }
-    status_display += drum_tracks[encoder].beats;
-    status_display += F("/");
-    // Length
-    if (drum_tracks[encoder].length < 10) {
-        status_display += F(" ");
-    }
-    status_display += drum_tracks[encoder].length;
-
-    status_display += F(" R");
-    // Rotation
-    if (drum_tracks[encoder].rotation < 10) {
-        status_display += F("  ");
-    } else if (drum_tracks[encoder].rotation < 100) {
-        status_display += F(" ");
-    }
-    status_display += drum_tracks[encoder].rotation;
-
-    status_display += F(" N");
-    // Note
-    if (drum_tracks[encoder].note < 10) {
-        status_display += F("  ");
-    } else if (drum_tracks[encoder].note < 100) {
-        status_display += F(" ");
-    }
-    status_display += drum_tracks[encoder].note;
-
-    status_timeout = micros() + timeOut;
-    ui_dirty = true;
+    displayDrumTrackStatus(encoder);
 }
 
 
@@ -410,5 +377,58 @@ void saveDrumSequence() {
         offset += 1;
     }
 
+    ui_dirty = true;
+}
+
+void displayDrumTrackStatus(byte track) {
+    // Update status display
+    // Beats
+    status_display = F("");
+    if (drum_tracks[track].beats < 10) {
+        status_display += F(" ");
+    }
+    status_display += drum_tracks[track].beats;
+    status_display += F("/");
+    // Length
+    if (drum_tracks[track].length < 10) {
+        status_display += F(" ");
+    }
+    status_display += drum_tracks[track].length;
+
+    status_display += F(" R");
+    // Rotation
+    if (drum_tracks[track].rotation < 10) {
+        status_display += F("  ");
+    } else if (drum_tracks[track].rotation < 100) {
+        status_display += F(" ");
+    }
+    status_display += drum_tracks[track].rotation;
+
+    status_display += F(" N");
+    // Note
+    if (drum_tracks[track].note < 10) {
+        status_display += F("  ");
+    } else if (drum_tracks[track].note < 100) {
+        status_display += F(" ");
+    }
+    status_display += drum_tracks[track].note;
+
+    // Put a cursor under the current mode
+    if (drum_track_edit_mode[track] == BEATS) {
+        cursor_x = 1;
+        cursor_y = 1;
+    } else if (drum_track_edit_mode[track] == LENGTH) {
+        cursor_x = 4;
+        cursor_y = 1;
+    } else if (drum_track_edit_mode[track] == ROTATION) {
+        cursor_x = 6;
+        cursor_y = 1;
+    } else if (drum_track_edit_mode[track] == NOTE) {
+        cursor_x = 11;
+        cursor_y = 1;
+    }
+    cursor_display = true;
+
+    status_timeout = micros() + timeOut;
     ui_dirty = true;
 }

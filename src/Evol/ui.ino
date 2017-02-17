@@ -59,6 +59,7 @@ void draw_ui() {
     // Display Status
     if (status_timeout < micros()) {
         status_display = F("");
+        cursor_display = false;
     }
     lcd.setCursor(0, 1);
     while (status_display.length() <= 16) {
