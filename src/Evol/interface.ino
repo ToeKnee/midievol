@@ -73,6 +73,8 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
                         sequence_edit_mode[encoder] = SEQUENCE_VELOCITY;
                     } else if (sequence_edit_mode[encoder] == SEQUENCE_VELOCITY) {
                         sequence_edit_mode[encoder] = SEQUENCE_NOTE_LENGTH;
+                    } else if (sequence_edit_mode[encoder] == SEQUENCE_NOTE_LENGTH) {
+                        sequence_edit_mode[encoder] = SEQUENCE_NOTE;
                     }
                     // Display the latest status
                     displaySequenceNoteStatus(encoder);
