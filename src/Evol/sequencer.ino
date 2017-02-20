@@ -145,6 +145,23 @@ void adjustSequenceIndex(byte adjustment, bool loading) {
     ui_dirty = true;
 }
 
+void adjustSequenceChannel(byte adjustment) {
+    sequences[sequence_id].channel += adjustment;
+
+    if (sequences[sequence_id].channel > 200) { // Looping << backwards
+        sequences[sequence_id].channel = 15;
+    } else if (sequences[sequence_id].channel > 15) { // Looping >> forwards
+        sequences[sequence_id].channel = 0;
+    }
+
+    status_display = F("Channel: ");
+    status_display += sequences[sequence_id].channel + 1;  // Display off by one.
+
+    status_timeout = micros() + timeOut;
+    ui_dirty = true;
+}
+
+
 void setNoteLengthFromBeatDivision() {
     for (byte i = 0; i < 64; i++) {
         sequences_notes[sequence_id][i].note_length = sequences[sequence_id].beat_division;
