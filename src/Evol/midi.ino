@@ -138,11 +138,7 @@ void handleSongPosition(unsigned int beats) {
 void play_note() {
     byte current_note = beat % (sequences[sequence_id].length + 1);  // Sequence length is 0 indexed
     unsigned int ticks_left;
-    if (sequences[sequence_id].note_length_from_sequence) {
-        ticks_left = beat_division_map[sequences[sequence_id].note_length];
-    } else {
-        ticks_left = beat_division_map[sequences_notes[sequence_id][current_note].note_length];
-    }
+    ticks_left = beat_division_map[sequences_notes[sequence_id][current_note].note_length];
 
     // Display the playing note
     display_note = current_note;
@@ -150,13 +146,7 @@ void play_note() {
     byte i = 1;  // Start at 1, 0 is current_note
     if (current_note != TIE) {
         while (sequences_notes[sequence_id][(beat + i) % (sequences[sequence_id].length + 1)].note == TIE) { // Sequence length is 0 indexed
-
-            if (sequences[sequence_id].note_length_from_sequence) {
-                ticks_left += beat_division_map[sequences[sequence_id].note_length];
-            } else {
-                ticks_left += beat_division_map[sequences_notes[sequence_id][current_note].note_length];
-            }
-
+            ticks_left += beat_division_map[sequences_notes[sequence_id][current_note].note_length];
             i++;
             if (i == 255) {
                 // Hopefully there aren't 255 TIE's, but you never know.

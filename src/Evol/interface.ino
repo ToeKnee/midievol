@@ -15,8 +15,6 @@ void handleEncoder(byte encoder, byte value) {
                     adjustBPM(value);
                 } else if (encoder == 1) {  // Handle Beat Division Changes
                     adjustBeatDivision(value);
-                } else if (encoder == 2) {  // Handle Note Length Changes
-                    adjustNoteLength(value);
                 } else if (encoder == 3) {  // Handle Sequence Length Changes
                     adjustSequenceLength(value);
                 } else if (encoder == 12) {  // Handle Load position
@@ -56,7 +54,9 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
         if (mode == SEQUENCER) {
             if (button == ClickEncoder::Clicked) {
                 if (shift) {
-                    if (encoder == 12) {
+                    if (encoder == 1) {
+                        setNoteLengthFromBeatDivision();
+                    } else if (encoder == 12) {
                         loadSequence(false);
                     } else if (encoder == 13) {
                         initSequence();
@@ -69,10 +69,7 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
                         sequence_edit_mode[encoder] = SEQUENCE_VELOCITY;
                     } else if (sequence_edit_mode[encoder] == SEQUENCE_VELOCITY) {
                         sequence_edit_mode[encoder] = SEQUENCE_NOTE_LENGTH;
-                    } else if (sequence_edit_mode[encoder] == SEQUENCE_NOTE_LENGTH) {
-                        sequence_edit_mode[encoder] = SEQUENCE_NOTE;
                     }
-
                     // Display the latest status
                     displaySequenceNoteStatus(encoder);
                  }

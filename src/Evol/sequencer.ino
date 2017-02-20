@@ -13,8 +13,6 @@ void init_sequencer() {
         sequences[i].channel = i + 1;
         sequences[i].length = 64;
         sequences[i].beat_division = QUARTER;
-        sequences[i].note_length = QUARTER;
-        sequences[i].note_length_from_sequence = true;
 
         for (int j = 0; j < 64; j++){
             sequences_notes[i][j].note = random(129);
@@ -133,35 +131,6 @@ void adjustBeatDivision(byte adjustment) {
     ui_dirty = true;
 }
 
-void adjustNoteLength(byte adjustment) {
-    sequences[sequence_id].note_length += adjustment;
-
-    // Handle looping round the values
-    if (sequences[sequence_id].note_length > 127) {
-        sequences[sequence_id].note_length = 5;
-    }
-
-    status_display = F("Gate: ");
-    // There are 6 possible beat divisions. Choose one.
-    sequences[sequence_id].note_length = sequences[sequence_id].note_length % 6;
-    if (sequences[sequence_id].note_length == 0) {
-        status_display += F("1/1");
-    } else if (sequences[sequence_id].note_length == 1) {
-        status_display += F("1/2");
-    } else if (sequences[sequence_id].note_length == 2) {
-        status_display += F("1/4");
-    } else if (sequences[sequence_id].note_length == 3) {
-        status_display += F("1/8");
-    } else if (sequences[sequence_id].note_length == 4) {
-        status_display += F("1/16");
-    } else if (sequences[sequence_id].note_length == 5) {
-        status_display += F("1/32");
-    }
-
-    status_timeout = micros() + timeOut;
-    ui_dirty = true;
-}
-
 void adjustSequenceIndex(byte adjustment, bool loading) {
     sequences[sequence_id].id += adjustment;
 
@@ -171,6 +140,17 @@ void adjustSequenceIndex(byte adjustment, bool loading) {
         status_display = F("Save Seq: ");
     }
     status_display += sequences[sequence_id].id + 1;  // Display off by one.
+
+    status_timeout = micros() + timeOut;
+    ui_dirty = true;
+}
+
+void setNoteLengthFromBeatDivision() {
+    for (byte i = 0; i < 64; i++) {
+        sequences_notes[sequence_id][i].note_length = sequences[sequence_id].beat_division;
+    }
+
+    status_display = F("Set Gate Length");
 
     status_timeout = micros() + timeOut;
     ui_dirty = true;
@@ -237,11 +217,10 @@ void loadSequence(bool quiet) {
     sequences[sequence_id].length = myEEPROM.read(address + offset);
     offset += 1;
     sequences[sequence_id].beat_division = myEEPROM.read(address + offset);
-    offset += 1;
-    sequences[sequence_id].note_length = myEEPROM.read(address + offset);
-    offset += 1;
-    sequences[sequence_id].note_length_from_sequence = myEEPROM.read(address + offset);
-    offset += 1;
+    // We have removed note_length and note_length_from_sequence,
+    // these bytes can be reused without having to lose the currenct
+    // save structure
+    offset += 3;
 
     // Sequence Notes
     for (byte i = 0; i < 64; i++) {
@@ -273,11 +252,10 @@ void saveSequence() {
     myEEPROM.write(address + offset, sequences[sequence_id].length);
     offset += 1;
     myEEPROM.write(address + offset, sequences[sequence_id].beat_division);
-    offset += 1;
-    myEEPROM.write(address + offset, sequences[sequence_id].note_length);
-    offset += 1;
-    myEEPROM.write(address + offset, sequences[sequence_id].note_length_from_sequence);
-    offset += 1;
+    // We have removed note_length and note_length_from_sequence,
+    // these bytes can be reused without having to lose the currenct
+    // save structure
+    offset += 3;
 
     // Sequence Notes
     for (byte i = 0; i < 64; i++) {

@@ -119,8 +119,8 @@ struct Sequence {
     byte channel; // 16 channels
     byte length; // up to 64
     byte beat_division; // BeatDivision
-    byte note_length; // BeatDivision
-    bool note_length_from_sequence;
+    byte unused_0;
+    byte unused_1;
 };
 
 typedef enum SequenceEditMode {
