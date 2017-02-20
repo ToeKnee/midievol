@@ -300,6 +300,22 @@ void adjustDrumSequenceIndex(byte adjustment, bool loading) {
     ui_dirty = true;
 }
 
+void adjustDrumChannel(byte adjustment) {
+    drum_sequence.channel += adjustment;
+
+    if (drum_sequence.channel > 200) { // Looping << backwards
+        drum_sequence.channel = 15;
+    } else if (drum_sequence.channel > 15) { // Looping >> forwards
+        drum_sequence.channel = 0;
+    }
+
+    status_display = F("Channel: ");
+    status_display += drum_sequence.channel + 1;  // Display off by one.
+
+    status_timeout = micros() + timeOut;
+    ui_dirty = true;
+}
+
 
 unsigned int getDrumSequenceAddress(byte id) {
     return end_of_sequences + (size_of_drum_sequence * id);

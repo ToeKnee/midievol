@@ -40,6 +40,8 @@ void handleEncoder(byte encoder, byte value) {
                     adjustDrumSequenceIndex(value, true);
                 } else if (encoder == 13) {  // Handle Initialising Drum Patterns
                     initDrumPatternChoice(value);
+                } else if (encoder == 14) {
+                    adjustDrumChannel(value);
                 } else if (encoder == 15) {  // Handle Save position
                     adjustDrumSequenceIndex(value, false);
                 }
