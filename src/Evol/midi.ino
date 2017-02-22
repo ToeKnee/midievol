@@ -166,7 +166,7 @@ void play_drums() {
     unsigned int ticks_left = beat_division_map[drum_sequence.beat_division];
     bool display_drums = status_timeout < micros();
     if (display_drums) {
-        status_timeout = next_clock_pulse + 10000;
+        status_timeout = next_clock_pulse + 100000;
         ui_dirty = true;
         status_display = F("");
     }
