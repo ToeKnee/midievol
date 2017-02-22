@@ -14,13 +14,13 @@
 #include <Bounce2.h>
 #include <ClickEncoder.h>
 #include <extEEPROM.h>
-#include <LiquidCrystal.h>
+#include <LiquidCrystal_I2C.h>
 #include <MIDI.h>
 #include <TimerOne.h>
 #include <Wire.h>
 
 // Initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(12, 11, 7, 8, 9, 10);
+LiquidCrystal_I2C lcd(0x3F, 16, 2);
 String status_display; // Please keep <= 16 chars
 
 // Eeprom
@@ -185,11 +185,15 @@ const int end_of_sequences = size_of_sequence * 256;
 
 
 void setup() {
+    lcd.init();                      // initialize the lcd
+    lcd.backlight();
+
     // Set up the custom characters
     lcd.createChar(0, empty_heart);
     lcd.createChar(1, heart);
     lcd.createChar(2, play);
     lcd.createChar(3, shift_char);
+
 
     // Set up the LCD's number of columns and rows:
     lcd.begin(16, 2);
@@ -273,6 +277,7 @@ void setup() {
 
     // Set up the sequencer
     init_sequencer();
+
     // Set up the drums
     init_drums();
 
