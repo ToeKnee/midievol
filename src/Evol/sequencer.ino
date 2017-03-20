@@ -8,7 +8,7 @@ SequenceTrackInitMode sequence_track_init_mode = EMPTY_SEQUENCE;
 
 
 void init_sequencer() {
-    for (int i = 0; i < 16; i++){
+    for (int i = 0; i < 8; i++){
         sequences[i].id = i;
         sequences[i].channel = i + 1;
         sequences[i].length = 64;

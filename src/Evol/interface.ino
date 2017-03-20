@@ -17,13 +17,13 @@ void handleEncoder(byte encoder, byte value) {
                     adjustBeatDivision(value);
                 } else if (encoder == 3) {  // Handle Sequence Length Changes
                     adjustSequenceLength(value);
-                } else if (encoder == 12) {  // Handle Load position
+                } else if (encoder == 4) {  // Handle Load position
                     adjustSequenceIndex(value, true);
-                } else if (encoder == 13) {  // Handle Initialising Sequence Patterns
+                } else if (encoder == 5) {  // Handle Initialising Sequence Patterns
                     initSequenceChoice(value);
-                } else if (encoder == 14) {
+                } else if (encoder == 6) {
                     adjustSequenceChannel(value);
-                } else if (encoder == 15) {  // Handle Save position
+                } else if (encoder == 7) {  // Handle Save position
                     adjustSequenceIndex(value, false);
                 }
             }
@@ -38,13 +38,13 @@ void handleEncoder(byte encoder, byte value) {
                     adjustBPM(value);
                 } else if (encoder == 1) {  // Handle Beat Division Changes
                     adjustBeatDivision(value);  // TODO: Drums should have own beat division
-                } else if (encoder == 12) {  // Handle Load position
+                } else if (encoder == 4) {  // Handle Load position
                     adjustDrumSequenceIndex(value, true);
-                } else if (encoder == 13) {  // Handle Initialising Drum Patterns
+                } else if (encoder == 5) {  // Handle Initialising Drum Patterns
                     initDrumPatternChoice(value);
-                } else if (encoder == 14) {
+                } else if (encoder == 6) {
                     adjustDrumChannel(value);
-                } else if (encoder == 15) {  // Handle Save position
+                } else if (encoder == 7) {  // Handle Save position
                     adjustDrumSequenceIndex(value, false);
                 }
             }
@@ -60,11 +60,11 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
                 if (shift) {
                     if (encoder == 1) {
                         setNoteLengthFromBeatDivision();
-                    } else if (encoder == 12) {
+                    } else if (encoder == 4) {
                         loadSequence(false);
-                    } else if (encoder == 13) {
+                    } else if (encoder == 5) {
                         initSequence();
-                    } else if (encoder == 15) {
+                    } else if (encoder == 7) {
                         saveSequence();
                     }
                 } else {
@@ -83,11 +83,11 @@ void handleEncoderButton(byte encoder, ClickEncoder::Button button) {
         } else if (mode == DRUM) {
             if (button == ClickEncoder::Clicked) {
                 if (shift) {
-                    if (encoder == 12) {
+                    if (encoder == 4) {
                         loadDrumSequence(false);
-                    } else if (encoder == 13) {
+                    } else if (encoder == 5) {
                         initDrumPattern();
-                    } else if (encoder == 15) {
+                    } else if (encoder == 7) {
                         saveDrumSequence();
                     }
                 } else {

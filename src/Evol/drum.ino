@@ -12,7 +12,7 @@ struct DrumSequence {
     byte beat_division; // BeatDivision
 };
 
-DrumTrack drum_tracks[16];
+DrumTrack drum_tracks[8];
 DrumSequence drum_sequence;
 const int size_of_drum_sequence = sizeof(drum_sequence) + sizeof(drum_tracks);
 
@@ -20,7 +20,7 @@ int step_status = 0;
 bool drum_track[64];
 byte remainder[64];
 byte count[64];
-byte calculated_drum_tracks[16][64];
+byte calculated_drum_tracks[8][64];
 
 typedef enum DrumTrackEditMode {
     DRUM_TRACK_BEATS,
@@ -28,7 +28,7 @@ typedef enum DrumTrackEditMode {
     DRUM_TRACK_ROTATION,
     DRUM_TRACK_NOTE
 };
-DrumTrackEditMode drum_track_edit_mode[16];
+DrumTrackEditMode drum_track_edit_mode[8];
 
 typedef enum DrumTrackInitMode {
     EMPTY_DRUM_PATTERN,
@@ -124,7 +124,7 @@ void build_string (byte track, int level)  {
 void init_drums() {
     drum_sequence.channel = 10;
     drum_sequence.beat_division = SIXTEENTH;
-    for (int x = 0; x < 16; x++){
+    for (int x = 0; x < 8; x++){
         euclidean_build(x, 0, 16, 0, 35 + x);
         drum_track_edit_mode[x] = DRUM_TRACK_BEATS;
     }
@@ -182,7 +182,7 @@ void initDrumPattern() {
 }
 
 void emptyDrumPattern() {
-    for (int i=0; i < 16; i++) {
+    for (int i=0; i < 8; i++) {
         euclidean_build(i, 0, 16, 0, 35 + i);
     }
 }
@@ -194,7 +194,7 @@ void simpleDrumPattern() {
     euclidean_build(3, 1, 4, 2, 42);
     euclidean_build(4, 1, 64, 0, 49);
 
-    for (int i=5; i < 16; i++) {
+    for (int i=5; i < 8; i++) {
         euclidean_build(i, 0, 16, 0, 35 + i);
     }
 }
@@ -207,7 +207,7 @@ void funkyDrumPattern() {
     euclidean_build(5, 2, 3, 1, 53);
     euclidean_build(6, 5, 13, 0, 75);
 
-    for (int i=7; i < 16; i++) {
+    for (int i=7; i < 8; i++) {
         euclidean_build(i, 0, 16, 0, 35 + i);
     }
 }
@@ -219,20 +219,20 @@ void syncopatedDrumPattern() {
     euclidean_build(3, 1, 6, 3, 43);
     euclidean_build(4, 4, 11, 0, 60);
 
-    for (int i=5; i < 16; i++) {
+    for (int i=5; i < 8; i++) {
         euclidean_build(i, 0, 16, 0, 35 + i);
     }
 }
 
 void randomDrumPattern() {
-    // 4-16 random tracks
-    byte tracks = random(4, 16);
+    // 4-8 random tracks
+    byte tracks = random(4, 8);
     for (int x = 0; x < tracks; x++){
         int steps = random(64);
         euclidean_build(x, random(steps / 2), steps, random(steps), 35 + x);
     }
     // Empty out remaining tracks
-    for (int i=0; i < 16 - tracks; i++) {
+    for (int i=0; i < 8 - tracks; i++) {
         euclidean_build(tracks + i, 0, 1, 0, 35 + i);
     }
 }
@@ -341,7 +341,7 @@ void loadDrumSequence(bool quiet) {
     offset += 1;
 
     // Track
-    for (byte i = 0; i < 16; i++) {
+    for (byte i = 0; i < 8; i++) {
         drum_tracks[i].beats = myEEPROM.read(address + offset);
         offset += 1;
         drum_tracks[i].length = myEEPROM.read(address + offset);
@@ -382,7 +382,7 @@ void saveDrumSequence() {
     offset += 1;
 
     // Sequence Notes
-    for (byte i = 0; i < 16; i++) {
+    for (byte i = 0; i < 8; i++) {
         myEEPROM.write(address + offset, drum_tracks[i].beats);
         offset += 1;
         myEEPROM.write(address + offset, drum_tracks[i].length);
