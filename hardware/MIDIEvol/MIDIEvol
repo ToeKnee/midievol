@@ -1,0 +1,60 @@
+Source,/home/anthony/Projects/MIDIEvol/MIDIEvol.sch
+Kicad Rev,Eeschema 4.0.5+dfsg1-4
+Generated Date,Tue 21 Mar 2017 14:34:15 GMT
+
+Title,MIDIEvol
+Company,Mourne Musical Instruments
+Revision,1
+Date Issue,2017-03-08
+Comment,MIDI Sequencer
+
+Reference,Value,Library,Library Ref
+SW5,Encoder 1,device,Rotary_Encoder_Switch
+SW7,Encoder 2,device,Rotary_Encoder_Switch
+SW9,Encoder 3,device,Rotary_Encoder_Switch
+SW11,Encoder 4,device,Rotary_Encoder_Switch
+SW6,Encoder 5,device,Rotary_Encoder_Switch
+SW8,Encoder 6,device,Rotary_Encoder_Switch
+SW10,Encoder 7,device,Rotary_Encoder_Switch
+SW12,Encoder 8,device,Rotary_Encoder_Switch
+D1,LED 1,MIDIEvol-cache,LED-RESCUE-MIDIEvol
+D3,LED 2,MIDIEvol-cache,LED-RESCUE-MIDIEvol
+D6,LED 3,MIDIEvol-cache,LED-RESCUE-MIDIEvol
+D8,LED 4,MIDIEvol-cache,LED-RESCUE-MIDIEvol
+D9,LED 8,MIDIEvol-cache,LED-RESCUE-MIDIEvol
+D7,LED 7,MIDIEvol-cache,LED-RESCUE-MIDIEvol
+D4,LED 6,MIDIEvol-cache,LED-RESCUE-MIDIEvol
+D2,LED 5,MIDIEvol-cache,LED-RESCUE-MIDIEvol
+PLAY1,SW_Push,switches,SW_Push
+STOP1,SW_Push,switches,SW_Push
+X1,SW_Push,switches,SW_Push
+Y1,SW_Push,switches,SW_Push
+U1,24FC1026,MourneMusicInsturments,24FC1026
+U2,23LC1024,MourneMusicInsturments,23LC1024
+R2,200R,device,R
+P1,MIDI OUT,conn,DIN_5
+P2,MIDI IN,conn,DIN_5
+P3,MIDI THRU,conn,DIN_5
+R9,200R,device,R
+R8,220R,device,R
+R13,280R,device,R
+C5,0.1µF,MIDIEvol-rescue,CAP-RESCUE-MIDIEvol
+U3,PC900V,MourneMusicInsturments,PC900V
+R10,200R,device,R
+R3,200R,device,R
+C3,0.1µF,MIDIEvol-rescue,CAP-RESCUE-MIDIEvol
+C4,0.1µF,MIDIEvol-rescue,CAP-RESCUE-MIDIEvol
+RV1,10K POT_TRIM,device,POT_TRIM
+R5,220R,device,R
+R4,220R,device,R
+R6,220R,device,R
+R7,220R,device,R
+R12,220R,device,R
+R11,220R,device,R
+R14,220R,device,R
+R15,220R,device,R
+R1,220R,device,R
+DS1,LCD-016N002L,MIDIEvol-cache,LCD-016N002L
+D5,1N914,device,D_ALT
+C1,0.1µF,MIDIEvol-rescue,CAP-RESCUE-MIDIEvol
+SH1,ARDUINO_MEGA,shield_arduino,ARDUINO_MEGA

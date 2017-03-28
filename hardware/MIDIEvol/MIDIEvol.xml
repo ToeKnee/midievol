@@ -1,0 +1,1153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="D">
+  <design>
+    <source>/home/anthony/Projects/MIDIEvol/MIDIEvol.sch</source>
+    <date>Tue 21 Mar 2017 14:34:15 GMT</date>
+    <tool>Eeschema 4.0.5+dfsg1-4</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>MIDIEvol</title>
+        <company>Mourne Musical Instruments</company>
+        <rev>1</rev>
+        <date>2017-03-08</date>
+        <source>MIDIEvol.sch</source>
+        <comment number="1" value="MIDI Sequencer"/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="SW5">
+      <value>Encoder 1</value>
+      <footprint>ab2_input_devices:AB2_ROTARY_ENCODER_W_SWITCH</footprint>
+      <libsource lib="device" part="Rotary_Encoder_Switch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFEA40</tstamp>
+    </comp>
+    <comp ref="SW7">
+      <value>Encoder 2</value>
+      <footprint>ab2_input_devices:AB2_ROTARY_ENCODER_W_SWITCH</footprint>
+      <libsource lib="device" part="Rotary_Encoder_Switch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFEA9F</tstamp>
+    </comp>
+    <comp ref="SW9">
+      <value>Encoder 3</value>
+      <footprint>ab2_input_devices:AB2_ROTARY_ENCODER_W_SWITCH</footprint>
+      <libsource lib="device" part="Rotary_Encoder_Switch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFEB38</tstamp>
+    </comp>
+    <comp ref="SW11">
+      <value>Encoder 4</value>
+      <footprint>ab2_input_devices:AB2_ROTARY_ENCODER_W_SWITCH</footprint>
+      <libsource lib="device" part="Rotary_Encoder_Switch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFEBBD</tstamp>
+    </comp>
+    <comp ref="SW6">
+      <value>Encoder 5</value>
+      <footprint>ab2_input_devices:AB2_ROTARY_ENCODER_W_SWITCH</footprint>
+      <libsource lib="device" part="Rotary_Encoder_Switch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFEC02</tstamp>
+    </comp>
+    <comp ref="SW8">
+      <value>Encoder 6</value>
+      <footprint>ab2_input_devices:AB2_ROTARY_ENCODER_W_SWITCH</footprint>
+      <libsource lib="device" part="Rotary_Encoder_Switch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFEC7F</tstamp>
+    </comp>
+    <comp ref="SW10">
+      <value>Encoder 7</value>
+      <footprint>ab2_input_devices:AB2_ROTARY_ENCODER_W_SWITCH</footprint>
+      <libsource lib="device" part="Rotary_Encoder_Switch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFED0C</tstamp>
+    </comp>
+    <comp ref="SW12">
+      <value>Encoder 8</value>
+      <footprint>ab2_input_devices:AB2_ROTARY_ENCODER_W_SWITCH</footprint>
+      <libsource lib="device" part="Rotary_Encoder_Switch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFEDFD</tstamp>
+    </comp>
+    <comp ref="D1">
+      <value>LED 1</value>
+      <footprint>LEDs:LED-5MM</footprint>
+      <libsource lib="MIDIEvol-cache" part="LED-RESCUE-MIDIEvol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFF068</tstamp>
+    </comp>
+    <comp ref="D3">
+      <value>LED 2</value>
+      <footprint>LEDs:LED-5MM</footprint>
+      <libsource lib="MIDIEvol-cache" part="LED-RESCUE-MIDIEvol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFF121</tstamp>
+    </comp>
+    <comp ref="D6">
+      <value>LED 3</value>
+      <footprint>LEDs:LED-5MM</footprint>
+      <libsource lib="MIDIEvol-cache" part="LED-RESCUE-MIDIEvol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFF14E</tstamp>
+    </comp>
+    <comp ref="D8">
+      <value>LED 4</value>
+      <footprint>LEDs:LED-5MM</footprint>
+      <libsource lib="MIDIEvol-cache" part="LED-RESCUE-MIDIEvol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFF25F</tstamp>
+    </comp>
+    <comp ref="D9">
+      <value>LED 8</value>
+      <footprint>LEDs:LED-5MM</footprint>
+      <libsource lib="MIDIEvol-cache" part="LED-RESCUE-MIDIEvol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFF350</tstamp>
+    </comp>
+    <comp ref="D7">
+      <value>LED 7</value>
+      <footprint>LEDs:LED-5MM</footprint>
+      <libsource lib="MIDIEvol-cache" part="LED-RESCUE-MIDIEvol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFF383</tstamp>
+    </comp>
+    <comp ref="D4">
+      <value>LED 6</value>
+      <footprint>LEDs:LED-5MM</footprint>
+      <libsource lib="MIDIEvol-cache" part="LED-RESCUE-MIDIEvol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFF3B6</tstamp>
+    </comp>
+    <comp ref="D2">
+      <value>LED 5</value>
+      <footprint>LEDs:LED-5MM</footprint>
+      <libsource lib="MIDIEvol-cache" part="LED-RESCUE-MIDIEvol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFF3EB</tstamp>
+    </comp>
+    <comp ref="PLAY1">
+      <value>SW_Push</value>
+      <footprint>cherry-switch:CHERRY-MX1A-11NW_keyswitch</footprint>
+      <libsource lib="switches" part="SW_Push"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFF88D</tstamp>
+    </comp>
+    <comp ref="STOP1">
+      <value>SW_Push</value>
+      <footprint>cherry-switch:CHERRY-MX1A-11NW_keyswitch</footprint>
+      <libsource lib="switches" part="SW_Push"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFF96E</tstamp>
+    </comp>
+    <comp ref="X1">
+      <value>SW_Push</value>
+      <footprint>cherry-switch:CHERRY-MX1A-11NW_keyswitch</footprint>
+      <libsource lib="switches" part="SW_Push"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFF9A9</tstamp>
+    </comp>
+    <comp ref="Y1">
+      <value>SW_Push</value>
+      <footprint>cherry-switch:CHERRY-MX1A-11NW_keyswitch</footprint>
+      <libsource lib="switches" part="SW_Push"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58BFF9F2</tstamp>
+    </comp>
+    <comp ref="U1">
+      <value>24FC1026</value>
+      <footprint>Housings_DIP:DIP-8_W7.62mm</footprint>
+      <libsource lib="MourneMusicInsturments" part="24FC1026"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C021AB</tstamp>
+    </comp>
+    <comp ref="U2">
+      <value>23LC1024</value>
+      <footprint>Housings_DIP:DIP-8_W7.62mm</footprint>
+      <libsource lib="MourneMusicInsturments" part="23LC1024"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C03F5B</tstamp>
+    </comp>
+    <comp ref="R2">
+      <value>200R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C06677</tstamp>
+    </comp>
+    <comp ref="P1">
+      <value>MIDI OUT</value>
+      <footprint>Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MPT-2.54mm_5pol</footprint>
+      <libsource lib="conn" part="DIN_5"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C067F4</tstamp>
+    </comp>
+    <comp ref="P2">
+      <value>MIDI IN</value>
+      <footprint>Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MPT-2.54mm_5pol</footprint>
+      <libsource lib="conn" part="DIN_5"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C06891</tstamp>
+    </comp>
+    <comp ref="P3">
+      <value>MIDI THRU</value>
+      <footprint>Connectors_Terminal_Blocks:TerminalBlock_Pheonix_MPT-2.54mm_5pol</footprint>
+      <libsource lib="conn" part="DIN_5"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C06914</tstamp>
+    </comp>
+    <comp ref="R9">
+      <value>200R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C0696D</tstamp>
+    </comp>
+    <comp ref="R8">
+      <value>220R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C0ABC8</tstamp>
+    </comp>
+    <comp ref="R13">
+      <value>280R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C0B015</tstamp>
+    </comp>
+    <comp ref="C5">
+      <value>0.1µF</value>
+      <footprint>Capacitors_ThroughHole:C_Disc_D6_P5</footprint>
+      <libsource lib="MIDIEvol-rescue" part="CAP-RESCUE-MIDIEvol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C0C2FA</tstamp>
+    </comp>
+    <comp ref="U3">
+      <value>PC900V</value>
+      <footprint>Housings_DIP:DIP-6_W7.62mm</footprint>
+      <libsource lib="MourneMusicInsturments" part="PC900V"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C0F905</tstamp>
+    </comp>
+    <comp ref="R10">
+      <value>200R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C135B2</tstamp>
+    </comp>
+    <comp ref="R3">
+      <value>200R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C136EF</tstamp>
+    </comp>
+    <comp ref="C3">
+      <value>0.1µF</value>
+      <footprint>Capacitors_ThroughHole:C_Disc_D6_P5</footprint>
+      <libsource lib="MIDIEvol-rescue" part="CAP-RESCUE-MIDIEvol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C17A9D</tstamp>
+    </comp>
+    <comp ref="C4">
+      <value>0.1µF</value>
+      <footprint>Capacitors_ThroughHole:C_Disc_D6_P5</footprint>
+      <libsource lib="MIDIEvol-rescue" part="CAP-RESCUE-MIDIEvol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C17DB8</tstamp>
+    </comp>
+    <comp ref="RV1">
+      <value>10K POT_TRIM</value>
+      <footprint>Potentiometers:Potentiometer_Triwood_RM-065</footprint>
+      <libsource lib="device" part="POT_TRIM"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C03663</tstamp>
+    </comp>
+    <comp ref="R5">
+      <value>220R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C03D7D</tstamp>
+    </comp>
+    <comp ref="R4">
+      <value>220R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C04332</tstamp>
+    </comp>
+    <comp ref="R6">
+      <value>220R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C0447D</tstamp>
+    </comp>
+    <comp ref="R7">
+      <value>220R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C04575</tstamp>
+    </comp>
+    <comp ref="R12">
+      <value>220R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C0465C</tstamp>
+    </comp>
+    <comp ref="R11">
+      <value>220R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C04740</tstamp>
+    </comp>
+    <comp ref="R14">
+      <value>220R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C04899</tstamp>
+    </comp>
+    <comp ref="R15">
+      <value>220R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C04979</tstamp>
+    </comp>
+    <comp ref="R1">
+      <value>220R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM10mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C10B42</tstamp>
+    </comp>
+    <comp ref="DS1">
+      <value>LCD-016N002L</value>
+      <footprint>Displays:WC1602A</footprint>
+      <libsource lib="MIDIEvol-cache" part="LCD-016N002L"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C10E0B</tstamp>
+    </comp>
+    <comp ref="D5">
+      <value>1N914</value>
+      <footprint>Diodes_THT:D_DO-41_SOD81_P10.16mm_Horizontal</footprint>
+      <libsource lib="device" part="D_ALT"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C1A2ED</tstamp>
+    </comp>
+    <comp ref="C1">
+      <value>0.1µF</value>
+      <footprint>Capacitors_ThroughHole:C_Disc_D6_P5</footprint>
+      <libsource lib="MIDIEvol-rescue" part="CAP-RESCUE-MIDIEvol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C2BEE5</tstamp>
+    </comp>
+    <comp ref="SH1">
+      <value>ARDUINO_MEGA</value>
+      <footprint>SHIELD_ARDUINO:ARDUINO_MEGA_2560_R3_CONTOUR</footprint>
+      <libsource lib="shield_arduino" part="ARDUINO_MEGA"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C14CA0</tstamp>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="MourneMusicInsturments" part="23LC1024">
+      <description>1Mbit SPI Serial SRAM with SDI and SQI Interface</description>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">23LC1024</field>
+      </fields>
+      <pins>
+        <pin num="1" name="CS" type="input"/>
+        <pin num="2" name="SO/SIO1" type="input"/>
+        <pin num="3" name="SIO2" type="input"/>
+        <pin num="4" name="Vss" type="input"/>
+        <pin num="5" name="SI/SIO0" type="input"/>
+        <pin num="6" name="SCK" type="input"/>
+        <pin num="7" name="HOLD/SIO3" type="input"/>
+        <pin num="8" name="VCC" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="MourneMusicInsturments" part="24FC1026">
+      <description>1024K I2C CMOS Serial EEPROM</description>
+      <footprints>
+        <fp>PDIP</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">24FC1026</field>
+      </fields>
+      <pins>
+        <pin num="1" name="NC" type="input"/>
+        <pin num="2" name="A1" type="input"/>
+        <pin num="3" name="A2" type="input"/>
+        <pin num="4" name="Vss" type="input"/>
+        <pin num="5" name="SDA" type="input"/>
+        <pin num="6" name="SCL" type="input"/>
+        <pin num="7" name="WP" type="input"/>
+        <pin num="8" name="Vcc" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="shield_arduino" part="ARDUINO_MEGA">
+      <description>schématic for build a shield or clone an "arduino MEGA 2560 " based on revision 3</description>
+      <docs>http://arduino.cc/en/Main/ArduinoBoardMega2560</docs>
+      <fields>
+        <field name="Reference">SH</field>
+        <field name="Value">ARDUINO_MEGA</field>
+      </fields>
+      <pins>
+        <pin num="0" name="RX0" type="input"/>
+        <pin num="1" name="TX0" type="input"/>
+        <pin num="2" name="(*)_2" type="input"/>
+        <pin num="3" name="(*)_3" type="input"/>
+        <pin num="4" name="(*)_4" type="input"/>
+        <pin num="5" name="(*)_5" type="input"/>
+        <pin num="6" name="(*)_6" type="input"/>
+        <pin num="7" name="(*)_7" type="input"/>
+        <pin num="8" name="(*)_8" type="input"/>
+        <pin num="9" name="(*)_9" type="input"/>
+        <pin num="10" name="(*)_10" type="input"/>
+        <pin num="11" name="(*)_11" type="input"/>
+        <pin num="12" name="(*)_12" type="input"/>
+        <pin num="13" name="(*)_13" type="input"/>
+        <pin num="14" name="TXD3" type="input"/>
+        <pin num="15" name="RXD3" type="input"/>
+        <pin num="16" name="TXD2" type="input"/>
+        <pin num="17" name="RXD2" type="input"/>
+        <pin num="18" name="TXD1" type="input"/>
+        <pin num="19" name="RXD1" type="input"/>
+        <pin num="22" name="PA0" type="input"/>
+        <pin num="23" name="PA1" type="input"/>
+        <pin num="24" name="PA2" type="input"/>
+        <pin num="25" name="PA3" type="input"/>
+        <pin num="26" name="PA4" type="input"/>
+        <pin num="27" name="PA5" type="input"/>
+        <pin num="28" name="PA6" type="input"/>
+        <pin num="29" name="PA7" type="input"/>
+        <pin num="30" name="PC7" type="input"/>
+        <pin num="31" name="PC6" type="input"/>
+        <pin num="32" name="PC5" type="input"/>
+        <pin num="33" name="PC4" type="input"/>
+        <pin num="34" name="PC3" type="input"/>
+        <pin num="35" name="PC2" type="input"/>
+        <pin num="36" name="PC1" type="input"/>
+        <pin num="37" name="PC0" type="input"/>
+        <pin num="38" name="PD7" type="input"/>
+        <pin num="39" name="PG2" type="input"/>
+        <pin num="40" name="PG1" type="input"/>
+        <pin num="41" name="PG0" type="input"/>
+        <pin num="42" name="PL7" type="input"/>
+        <pin num="43" name="PL6" type="input"/>
+        <pin num="44" name="PL5_(*)" type="input"/>
+        <pin num="45" name="PL4_(*)" type="input"/>
+        <pin num="46" name="PL3_(*)" type="input"/>
+        <pin num="47" name="PL2" type="input"/>
+        <pin num="48" name="PL1" type="input"/>
+        <pin num="49" name="PL0" type="input"/>
+        <pin num="50" name="PB3_(MISO)" type="input"/>
+        <pin num="51" name="PB2_(MOSI)" type="input"/>
+        <pin num="52" name="PB1_(SCK)" type="input"/>
+        <pin num="53" name="PB0_(SS)" type="input"/>
+        <pin num="20/1" name="1/SDA" type="input"/>
+        <pin num="20/2" name="2/SDA" type="input"/>
+        <pin num="21/1" name="1/SCL" type="input"/>
+        <pin num="21/2" name="2/SCL" type="input"/>
+        <pin num="3V3" name="3V3" type="input"/>
+        <pin num="5V/1" name="5V/1" type="input"/>
+        <pin num="5V/2" name="2/5V" type="input"/>
+        <pin num="5V/3" name="3/5V" type="input"/>
+        <pin num="A0" name="A0" type="input"/>
+        <pin num="A1" name="A1" type="input"/>
+        <pin num="A2" name="A2" type="input"/>
+        <pin num="A3" name="A3" type="input"/>
+        <pin num="A4" name="A4" type="input"/>
+        <pin num="A5" name="A5" type="input"/>
+        <pin num="A6" name="A6" type="input"/>
+        <pin num="A7" name="A7" type="input"/>
+        <pin num="A8" name="A8" type="input"/>
+        <pin num="A9" name="A9" type="input"/>
+        <pin num="A10" name="A10" type="input"/>
+        <pin num="A11" name="A11" type="input"/>
+        <pin num="A12" name="A12" type="input"/>
+        <pin num="A13" name="A13" type="input"/>
+        <pin num="A14" name="A14" type="input"/>
+        <pin num="A15" name="A15" type="input"/>
+        <pin num="AREF" name="AREF" type="input"/>
+        <pin num="GND1" name="GND/1" type="input"/>
+        <pin num="GND2" name="GND/2" type="input"/>
+        <pin num="GND3" name="3/GND" type="input"/>
+        <pin num="GND4" name="GND/4" type="input"/>
+        <pin num="IREF" name="IOREF" type="input"/>
+        <pin num="NC" name="NC" type="NotConnected"/>
+        <pin num="RST" name="RESET" type="input"/>
+        <pin num="VIN" name="VIN" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="MIDIEvol-rescue" part="CAP-RESCUE-MIDIEvol">
+      <footprints>
+        <fp>*_CAP</fp>
+        <fp>CAP_*</fp>
+        <fp>SM*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">CAP-RESCUE-MIDIEvol</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="conn" part="DIN_5">
+      <description>5 pins connector, 41524</description>
+      <fields>
+        <field name="Reference">P</field>
+        <field name="Value">DIN_5</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+        <pin num="3" name="3" type="passive"/>
+        <pin num="4" name="4" type="passive"/>
+        <pin num="5" name="5" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="D_ALT">
+      <description>Diode, alternativ symbol</description>
+      <footprints>
+        <fp>Diode_*</fp>
+        <fp>D-*</fp>
+        <fp>*SingleDiode</fp>
+        <fp>*_Diode_*</fp>
+        <fp>*SingleDiode*</fp>
+        <fp>D_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">D_ALT</field>
+      </fields>
+      <pins>
+        <pin num="1" name="K" type="passive"/>
+        <pin num="2" name="A" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="MIDIEvol-cache" part="LCD16X2">
+      <aliases>
+        <alias>LCD-016N002L</alias>
+      </aliases>
+      <fields>
+        <field name="Reference">DS</field>
+        <field name="Value">LCD16X2</field>
+        <field name="Footprint">WC1602A</field>
+      </fields>
+      <pins>
+        <pin num="1" name="VSS" type="power_in"/>
+        <pin num="2" name="VDD" type="power_in"/>
+        <pin num="3" name="VO" type="input"/>
+        <pin num="4" name="RS" type="input"/>
+        <pin num="5" name="R/W" type="input"/>
+        <pin num="6" name="E" type="input"/>
+        <pin num="7" name="D0" type="input"/>
+        <pin num="8" name="D1" type="input"/>
+        <pin num="9" name="D2" type="input"/>
+        <pin num="10" name="D3" type="input"/>
+        <pin num="11" name="D4" type="input"/>
+        <pin num="12" name="D5" type="input"/>
+        <pin num="13" name="D6" type="input"/>
+        <pin num="14" name="D7" type="input"/>
+        <pin num="15" name="LED+" type="passive"/>
+        <pin num="16" name="LED-" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="MIDIEvol-cache" part="LED-RESCUE-MIDIEvol">
+      <footprints>
+        <fp>LED*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">LED-RESCUE-MIDIEvol</field>
+      </fields>
+      <pins>
+        <pin num="1" name="K" type="passive"/>
+        <pin num="2" name="A" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="MourneMusicInsturments" part="PC900V">
+      <description>OptoIsolator</description>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">PC900V</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Anode" type="input"/>
+        <pin num="2" name="Cathode" type="input"/>
+        <pin num="3" name="NC" type="input"/>
+        <pin num="4" name="Vo" type="input"/>
+        <pin num="5" name="GND" type="input"/>
+        <pin num="6" name="Vcc" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="POT_TRIM">
+      <description>Trim-Potentionmeter</description>
+      <fields>
+        <field name="Reference">RV</field>
+        <field name="Value">POT_TRIM</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+        <pin num="3" name="3" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="R">
+      <description>Resistor</description>
+      <footprints>
+        <fp>R_*</fp>
+        <fp>Resistor_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="Rotary_Encoder_Switch">
+      <description>Rotary encoder, dual channel, incremental quadrate outputs, with switch</description>
+      <docs>~</docs>
+      <fields>
+        <field name="Reference">SW</field>
+        <field name="Value">Rotary_Encoder_Switch</field>
+      </fields>
+      <pins>
+        <pin num="1" name="A" type="input"/>
+        <pin num="2" name="C" type="input"/>
+        <pin num="3" name="B" type="input"/>
+        <pin num="4" name="~" type="input"/>
+        <pin num="5" name="~" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="switches" part="SW_Push">
+      <description>Push button switch, generic, two pins</description>
+      <fields>
+        <field name="Reference">SW</field>
+        <field name="Value">SW_Push</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="device">
+      <uri>/usr/share/kicad/library/device.lib</uri>
+    </library>
+    <library logical="MIDIEvol-rescue">
+      <uri>/home/anthony/Projects/MIDIEvol/MIDIEvol-rescue.lib</uri>
+    </library>
+    <library logical="conn">
+      <uri>/usr/share/kicad/library/conn.lib</uri>
+    </library>
+    <library logical="switches">
+      <uri>/usr/share/kicad/library/switches.lib</uri>
+    </library>
+    <library logical="MourneMusicInsturments">
+      <uri>/home/anthony/Projects/kicad/library/MourneMusicInsturments.lib</uri>
+    </library>
+    <library logical="shield_arduino">
+      <uri>/home/anthony/Projects/kicad/library/Librairie_kicad_arduino/Library_schematic_shield_arduino/shield_arduino.lib</uri>
+    </library>
+    <library logical="MIDIEvol-cache">
+      <uri>/home/anthony/Projects/MIDIEvol/MIDIEvol-cache.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="GND">
+      <node ref="SH1" pin="GND2"/>
+      <node ref="U2" pin="4"/>
+      <node ref="DS1" pin="16"/>
+      <node ref="SH1" pin="GND1"/>
+      <node ref="P1" pin="2"/>
+      <node ref="C3" pin="2"/>
+      <node ref="C5" pin="1"/>
+      <node ref="U3" pin="5"/>
+      <node ref="SW8" pin="2"/>
+      <node ref="DS1" pin="5"/>
+      <node ref="SW11" pin="5"/>
+      <node ref="SW6" pin="2"/>
+      <node ref="C1" pin="2"/>
+      <node ref="U1" pin="2"/>
+      <node ref="D2" pin="1"/>
+      <node ref="PLAY1" pin="1"/>
+      <node ref="STOP1" pin="1"/>
+      <node ref="D7" pin="1"/>
+      <node ref="D9" pin="1"/>
+      <node ref="X1" pin="1"/>
+      <node ref="D4" pin="1"/>
+      <node ref="D8" pin="1"/>
+      <node ref="Y1" pin="1"/>
+      <node ref="SW11" pin="2"/>
+      <node ref="U1" pin="3"/>
+      <node ref="U1" pin="4"/>
+      <node ref="D6" pin="1"/>
+      <node ref="SW12" pin="2"/>
+      <node ref="C4" pin="2"/>
+      <node ref="D3" pin="1"/>
+      <node ref="D1" pin="1"/>
+      <node ref="SW12" pin="5"/>
+      <node ref="DS1" pin="1"/>
+      <node ref="SW6" pin="5"/>
+      <node ref="SW8" pin="5"/>
+      <node ref="SW10" pin="2"/>
+      <node ref="SW10" pin="5"/>
+      <node ref="SW7" pin="5"/>
+      <node ref="RV1" pin="3"/>
+      <node ref="SH1" pin="GND4"/>
+      <node ref="SH1" pin="GND3"/>
+      <node ref="SW5" pin="2"/>
+      <node ref="SW5" pin="5"/>
+      <node ref="SW7" pin="2"/>
+      <node ref="SW9" pin="2"/>
+      <node ref="SW9" pin="5"/>
+      <node ref="P3" pin="2"/>
+    </net>
+    <net code="2" name="Net-(SH1-Pad1)">
+      <node ref="SH1" pin="1"/>
+    </net>
+    <net code="3" name="Net-(SH1-PadVIN)">
+      <node ref="SH1" pin="VIN"/>
+    </net>
+    <net code="4" name="Net-(SH1-PadA6)">
+      <node ref="SH1" pin="A6"/>
+    </net>
+    <net code="5" name="Net-(SH1-Pad13)">
+      <node ref="SH1" pin="13"/>
+    </net>
+    <net code="6" name="Net-(SH1-Pad17)">
+      <node ref="SH1" pin="17"/>
+    </net>
+    <net code="7" name="Net-(SH1-Pad16)">
+      <node ref="SH1" pin="16"/>
+    </net>
+    <net code="8" name="Net-(SH1-Pad15)">
+      <node ref="SH1" pin="15"/>
+    </net>
+    <net code="9" name="Net-(SH1-Pad14)">
+      <node ref="SH1" pin="14"/>
+    </net>
+    <net code="10" name="Net-(SH1-Pad0)">
+      <node ref="SH1" pin="0"/>
+    </net>
+    <net code="11" name="Net-(SH1-PadAREF)">
+      <node ref="SH1" pin="AREF"/>
+    </net>
+    <net code="12" name="Net-(P3-Pad5)">
+      <node ref="P3" pin="5"/>
+      <node ref="R10" pin="2"/>
+    </net>
+    <net code="13" name="Net-(P3-Pad4)">
+      <node ref="P3" pin="4"/>
+      <node ref="R3" pin="1"/>
+    </net>
+    <net code="14" name="Net-(P1-Pad5)">
+      <node ref="R9" pin="2"/>
+      <node ref="P1" pin="5"/>
+    </net>
+    <net code="15" name="Net-(SH1-PadNC)">
+      <node ref="SH1" pin="NC"/>
+    </net>
+    <net code="16" name="Net-(SH1-Pad3V3)">
+      <node ref="SH1" pin="3V3"/>
+    </net>
+    <net code="17" name="Net-(SH1-PadRST)">
+      <node ref="SH1" pin="RST"/>
+    </net>
+    <net code="18" name="Net-(SH1-PadIREF)">
+      <node ref="SH1" pin="IREF"/>
+    </net>
+    <net code="19" name="Net-(SH1-Pad21/2)">
+      <node ref="SH1" pin="21/2"/>
+    </net>
+    <net code="20" name="Net-(SH1-Pad20/2)">
+      <node ref="SH1" pin="20/2"/>
+    </net>
+    <net code="21" name="Net-(P1-Pad4)">
+      <node ref="R2" pin="1"/>
+      <node ref="P1" pin="4"/>
+    </net>
+    <net code="22" name="Net-(P2-Pad4)">
+      <node ref="R8" pin="2"/>
+      <node ref="P2" pin="4"/>
+    </net>
+    <net code="23" name="Net-(D5-Pad2)">
+      <node ref="U3" pin="1"/>
+      <node ref="P2" pin="5"/>
+      <node ref="D5" pin="2"/>
+    </net>
+    <net code="24" name="Net-(DS1-Pad15)">
+      <node ref="R1" pin="1"/>
+      <node ref="DS1" pin="15"/>
+    </net>
+    <net code="25" name="Net-(DS1-Pad3)">
+      <node ref="DS1" pin="3"/>
+      <node ref="RV1" pin="2"/>
+    </net>
+    <net code="26" name="R1L">
+      <node ref="SH1" pin="45"/>
+      <node ref="R4" pin="1"/>
+    </net>
+    <net code="27" name="R6L">
+      <node ref="R7" pin="1"/>
+      <node ref="SH1" pin="38"/>
+    </net>
+    <net code="28" name="R2L">
+      <node ref="SH1" pin="37"/>
+      <node ref="R6" pin="1"/>
+    </net>
+    <net code="29" name="R7L">
+      <node ref="SH1" pin="47"/>
+      <node ref="R12" pin="1"/>
+    </net>
+    <net code="30" name="CS-SRAM">
+      <node ref="SH1" pin="A7"/>
+      <node ref="U2" pin="1"/>
+    </net>
+    <net code="31" name="MIDIOUT">
+      <node ref="R9" pin="1"/>
+      <node ref="SH1" pin="18"/>
+    </net>
+    <net code="32" name="R4S">
+      <node ref="SH1" pin="28"/>
+      <node ref="SW11" pin="4"/>
+    </net>
+    <net code="33" name="R7S">
+      <node ref="SW10" pin="4"/>
+      <node ref="SH1" pin="46"/>
+    </net>
+    <net code="34" name="R7A">
+      <node ref="SW10" pin="1"/>
+      <node ref="SH1" pin="48"/>
+    </net>
+    <net code="35" name="MIDIIN">
+      <node ref="U3" pin="4"/>
+      <node ref="R10" pin="1"/>
+      <node ref="SH1" pin="19"/>
+      <node ref="R13" pin="2"/>
+    </net>
+    <net code="36" name="R4L">
+      <node ref="SH1" pin="29"/>
+      <node ref="R14" pin="2"/>
+    </net>
+    <net code="37" name="R6S">
+      <node ref="SH1" pin="39"/>
+      <node ref="SW8" pin="4"/>
+    </net>
+    <net code="38" name="R7B">
+      <node ref="SW10" pin="3"/>
+      <node ref="SH1" pin="49"/>
+    </net>
+    <net code="39" name="R1B">
+      <node ref="SW5" pin="3"/>
+      <node ref="SH1" pin="43"/>
+    </net>
+    <net code="40" name="Net-(SH1-Pad53)">
+      <node ref="SH1" pin="53"/>
+    </net>
+    <net code="41" name="R3S">
+      <node ref="SH1" pin="24"/>
+      <node ref="SW9" pin="4"/>
+    </net>
+    <net code="42" name="R2B">
+      <node ref="SW7" pin="3"/>
+      <node ref="SH1" pin="34"/>
+    </net>
+    <net code="43" name="R1S">
+      <node ref="SW5" pin="4"/>
+      <node ref="SH1" pin="44"/>
+    </net>
+    <net code="44" name="R3L">
+      <node ref="SH1" pin="25"/>
+      <node ref="R11" pin="1"/>
+    </net>
+    <net code="45" name="R2A">
+      <node ref="SW7" pin="1"/>
+      <node ref="SH1" pin="35"/>
+    </net>
+    <net code="46" name="Net-(SH1-Pad8)">
+      <node ref="SH1" pin="8"/>
+    </net>
+    <net code="47" name="Net-(SH1-Pad11)">
+      <node ref="SH1" pin="11"/>
+    </net>
+    <net code="48" name="Net-(SH1-Pad10)">
+      <node ref="SH1" pin="10"/>
+    </net>
+    <net code="49" name="Net-(SH1-Pad9)">
+      <node ref="SH1" pin="9"/>
+    </net>
+    <net code="50" name="Net-(SH1-Pad5V/3)">
+      <node ref="SH1" pin="5V/3"/>
+    </net>
+    <net code="51" name="Net-(SH1-Pad7)">
+      <node ref="SH1" pin="7"/>
+    </net>
+    <net code="52" name="Net-(SH1-Pad6)">
+      <node ref="SH1" pin="6"/>
+    </net>
+    <net code="53" name="Net-(SH1-Pad5)">
+      <node ref="SH1" pin="5"/>
+    </net>
+    <net code="54" name="Net-(SH1-Pad4)">
+      <node ref="SH1" pin="4"/>
+    </net>
+    <net code="55" name="Net-(SH1-Pad3)">
+      <node ref="SH1" pin="3"/>
+    </net>
+    <net code="56" name="Net-(SH1-Pad2)">
+      <node ref="SH1" pin="2"/>
+    </net>
+    <net code="57" name="Net-(SH1-Pad5V/2)">
+      <node ref="SH1" pin="5V/2"/>
+    </net>
+    <net code="58" name="SDA">
+      <node ref="SH1" pin="20/1"/>
+      <node ref="U1" pin="5"/>
+    </net>
+    <net code="59" name="R8A">
+      <node ref="SH1" pin="A12"/>
+      <node ref="SW12" pin="1"/>
+    </net>
+    <net code="60" name="R8B">
+      <node ref="SH1" pin="A13"/>
+      <node ref="SW12" pin="3"/>
+    </net>
+    <net code="61" name="R8S">
+      <node ref="SH1" pin="A14"/>
+      <node ref="SW12" pin="4"/>
+    </net>
+    <net code="62" name="R8L">
+      <node ref="SH1" pin="A15"/>
+      <node ref="R15" pin="1"/>
+    </net>
+    <net code="63" name="R5L">
+      <node ref="SH1" pin="33"/>
+      <node ref="R5" pin="1"/>
+    </net>
+    <net code="64" name="SCL">
+      <node ref="SH1" pin="21/1"/>
+      <node ref="U1" pin="6"/>
+    </net>
+    <net code="65" name="5V">
+      <node ref="DS1" pin="2"/>
+      <node ref="R1" pin="2"/>
+      <node ref="RV1" pin="1"/>
+      <node ref="C1" pin="1"/>
+      <node ref="R2" pin="2"/>
+      <node ref="R3" pin="2"/>
+      <node ref="U3" pin="6"/>
+      <node ref="C3" pin="1"/>
+      <node ref="C4" pin="1"/>
+      <node ref="SH1" pin="5V/1"/>
+      <node ref="R13" pin="1"/>
+      <node ref="U2" pin="8"/>
+      <node ref="U1" pin="8"/>
+      <node ref="U1" pin="7"/>
+      <node ref="U2" pin="7"/>
+    </net>
+    <net code="66" name="Net-(D5-Pad1)">
+      <node ref="D5" pin="1"/>
+      <node ref="R8" pin="1"/>
+      <node ref="U3" pin="2"/>
+    </net>
+    <net code="67" name="Net-(SH1-Pad12)">
+      <node ref="SH1" pin="12"/>
+    </net>
+    <net code="68" name="R6A">
+      <node ref="SW8" pin="1"/>
+      <node ref="SH1" pin="40"/>
+    </net>
+    <net code="69" name="MISO">
+      <node ref="U2" pin="2"/>
+      <node ref="SH1" pin="50"/>
+    </net>
+    <net code="70" name="LCD-RS">
+      <node ref="SH1" pin="A0"/>
+      <node ref="DS1" pin="4"/>
+    </net>
+    <net code="71" name="R5A">
+      <node ref="SH1" pin="31"/>
+      <node ref="SW6" pin="1"/>
+    </net>
+    <net code="72" name="R6B">
+      <node ref="SH1" pin="41"/>
+      <node ref="SW8" pin="3"/>
+    </net>
+    <net code="73" name="MOSI">
+      <node ref="U2" pin="5"/>
+      <node ref="SH1" pin="51"/>
+    </net>
+    <net code="74" name="R5B">
+      <node ref="SH1" pin="30"/>
+      <node ref="SW6" pin="3"/>
+    </net>
+    <net code="75" name="R3B">
+      <node ref="SH1" pin="22"/>
+      <node ref="SW9" pin="3"/>
+    </net>
+    <net code="76" name="R5S">
+      <node ref="SH1" pin="32"/>
+      <node ref="SW6" pin="4"/>
+    </net>
+    <net code="77" name="R1A">
+      <node ref="SH1" pin="42"/>
+      <node ref="SW5" pin="1"/>
+    </net>
+    <net code="78" name="SCK">
+      <node ref="U2" pin="6"/>
+      <node ref="SH1" pin="52"/>
+    </net>
+    <net code="79" name="R3A">
+      <node ref="SH1" pin="23"/>
+      <node ref="SW9" pin="1"/>
+    </net>
+    <net code="80" name="Net-(P2-Pad1)">
+      <node ref="P2" pin="1"/>
+    </net>
+    <net code="81" name="Net-(C5-Pad2)">
+      <node ref="P2" pin="2"/>
+      <node ref="C5" pin="2"/>
+    </net>
+    <net code="82" name="Net-(P2-Pad3)">
+      <node ref="P2" pin="3"/>
+    </net>
+    <net code="83" name="Net-(P3-Pad1)">
+      <node ref="P3" pin="1"/>
+    </net>
+    <net code="84" name="Net-(P3-Pad3)">
+      <node ref="P3" pin="3"/>
+    </net>
+    <net code="85" name="Net-(P1-Pad3)">
+      <node ref="P1" pin="3"/>
+    </net>
+    <net code="86" name="Net-(U2-Pad3)">
+      <node ref="U2" pin="3"/>
+    </net>
+    <net code="87" name="Net-(P1-Pad1)">
+      <node ref="P1" pin="1"/>
+    </net>
+    <net code="88" name="Net-(U1-Pad1)">
+      <node ref="U1" pin="1"/>
+    </net>
+    <net code="89" name="Net-(U3-Pad3)">
+      <node ref="U3" pin="3"/>
+    </net>
+    <net code="90" name="R4B">
+      <node ref="SH1" pin="26"/>
+      <node ref="SW11" pin="3"/>
+    </net>
+    <net code="91" name="R2S">
+      <node ref="SH1" pin="36"/>
+      <node ref="SW7" pin="4"/>
+    </net>
+    <net code="92" name="R4A">
+      <node ref="SW11" pin="1"/>
+      <node ref="SH1" pin="27"/>
+    </net>
+    <net code="93" name="X">
+      <node ref="SH1" pin="A10"/>
+      <node ref="X1" pin="2"/>
+    </net>
+    <net code="94" name="Net-(D4-Pad2)">
+      <node ref="D4" pin="2"/>
+      <node ref="R7" pin="2"/>
+    </net>
+    <net code="95" name="Net-(D2-Pad2)">
+      <node ref="D2" pin="2"/>
+      <node ref="R5" pin="2"/>
+    </net>
+    <net code="96" name="PLAY">
+      <node ref="SH1" pin="A8"/>
+      <node ref="PLAY1" pin="2"/>
+    </net>
+    <net code="97" name="STOP">
+      <node ref="SH1" pin="A9"/>
+      <node ref="STOP1" pin="2"/>
+    </net>
+    <net code="98" name="Y">
+      <node ref="Y1" pin="2"/>
+      <node ref="SH1" pin="A11"/>
+    </net>
+    <net code="99" name="Net-(D1-Pad2)">
+      <node ref="D1" pin="2"/>
+      <node ref="R4" pin="2"/>
+    </net>
+    <net code="100" name="Net-(D3-Pad2)">
+      <node ref="D3" pin="2"/>
+      <node ref="R6" pin="2"/>
+    </net>
+    <net code="101" name="Net-(D6-Pad2)">
+      <node ref="R11" pin="2"/>
+      <node ref="D6" pin="2"/>
+    </net>
+    <net code="102" name="Net-(D8-Pad2)">
+      <node ref="R14" pin="1"/>
+      <node ref="D8" pin="2"/>
+    </net>
+    <net code="103" name="Net-(D9-Pad2)">
+      <node ref="R15" pin="2"/>
+      <node ref="D9" pin="2"/>
+    </net>
+    <net code="104" name="Net-(D7-Pad2)">
+      <node ref="D7" pin="2"/>
+      <node ref="R12" pin="2"/>
+    </net>
+    <net code="105" name="Net-(DS1-Pad7)">
+      <node ref="DS1" pin="7"/>
+    </net>
+    <net code="106" name="Net-(DS1-Pad8)">
+      <node ref="DS1" pin="8"/>
+    </net>
+    <net code="107" name="Net-(DS1-Pad9)">
+      <node ref="DS1" pin="9"/>
+    </net>
+    <net code="108" name="Net-(DS1-Pad10)">
+      <node ref="DS1" pin="10"/>
+    </net>
+    <net code="109" name="LCD-E">
+      <node ref="DS1" pin="6"/>
+      <node ref="SH1" pin="A1"/>
+    </net>
+    <net code="110" name="LCD-4">
+      <node ref="SH1" pin="A2"/>
+      <node ref="DS1" pin="11"/>
+    </net>
+    <net code="111" name="LCD-5">
+      <node ref="SH1" pin="A3"/>
+      <node ref="DS1" pin="12"/>
+    </net>
+    <net code="112" name="LCD-6">
+      <node ref="SH1" pin="A4"/>
+      <node ref="DS1" pin="13"/>
+    </net>
+    <net code="113" name="LCD-7">
+      <node ref="SH1" pin="A5"/>
+      <node ref="DS1" pin="14"/>
+    </net>
+  </nets>
+</export>
